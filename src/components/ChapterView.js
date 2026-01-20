@@ -107,7 +107,7 @@ export class ChapterView {
             top: 50px;
             left: 50%;
             transform: translateX(-50%);
-            height: 40%;
+            height: 50%;
             width: 40%;
             display: flex;
             justify-content: center;
@@ -160,6 +160,8 @@ export class ChapterView {
         // シナリオを自動ロード
         this.autoLoadScenario();
 
+        this.addResponsiveStyles();
+        
         return this.element;
     }
 
@@ -707,6 +709,38 @@ export class ChapterView {
             document.body.appendChild(this.container);
         }
         return this.container;
+    }
+
+    addResponsiveStyles() {
+        if (!document.querySelector('#chapter-view-responsive')) {
+            const style = document.createElement('style');
+            style.id = 'chapter-view-responsive';
+            style.textContent = `
+                @media (max-width: 768px) {
+                    .character-area {
+                        top: 60px !important;
+                        height: 35% !important;
+                        width: 60% !important;
+                    }
+                    
+                    .character-area #character-emoji {
+                        font-size: 6rem !important;
+                    }
+                    
+                    .chapter-banner {
+                        padding: 0.75rem 1rem !important;
+                        flex-direction: column !important;
+                        align-items: flex-start !important;
+                        gap: 0.5rem !important;
+                    }
+                    
+                    .chapter-banner h2 {
+                        font-size: 1.1rem !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
 
     hexToRgba(hex, alpha) {
