@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createRoot } from 'react-dom/client';
 
 // ============================================
 // G検定試験仕様問題（9章×20問=180問）
@@ -554,7 +555,7 @@ function AiChatModal({ isOpen, onClose, chapter, currentQuestion, apiKey, onOpen
 // ============================================
 // メインアプリケーション
 // ============================================
-export default function GKenteiQuizApp() {
+function GKenteiQuizApp() {
   const [mode, setMode] = useState('home');
   const [currentChapter, setCurrentChapter] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -1182,3 +1183,16 @@ export default function GKenteiQuizApp() {
     default: return renderHome();
   }
 }
+export default class QuizOnlyView {
+  render() {
+    const container = document.createElement('div');
+    container.style.width = '100%';
+    container.style.height = '100%';
+
+    const root = createRoot(container);
+    root.render(<GKenteiQuizApp />);
+
+    return container;
+  }
+}
+
