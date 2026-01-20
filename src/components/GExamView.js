@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 
 const quizData = {
   chapter1: {
-    id: 1, title: "人工知能をめぐる動向", character: "🤖", color: "#3B82F6",
+    id: 1, title: "人工知能をめぐる動向", subtitle: "AI・ML・DLの歴史と基本概念", character: "🌌", characterName: "AI史の語り部", quote: "歴史を知る者が未来を創る", color: "#6366f1",
     questions: [
       {id:1,type:"scenario",question:"あなたはAI導入を検討する経営者です。「AIで何でも自動化できる」と期待する社員に説明が必要です。環境を認識し自律的に判断・行動するシステムを何と呼びますか？",options:["エージェント","ロボット","オートマトン","デーモン"],correct:0,explanation:"エージェントは環境認識と自律的判断・行動を行うシステムです。AIエージェントはタスク実行に特化しますが、万能ではありません。",keywords:["エージェント"]},
       {id:2,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「AI研究の出発点は1956年の【A】である。この会議で初めて『人工知能』という用語が使われた。」",options:["チューリング会議","ダートマス会議","MIT会議","スタンフォード会議"],correct:1,explanation:"1956年のダートマス会議でジョン・マッカーシーらが「Artificial Intelligence」を提唱しました。",keywords:["ダートマス会議"]},
@@ -32,7 +32,7 @@ const quizData = {
   },
 
   chapter2: {
-    id: 2, title: "機械学習の概要", character: "📊", color: "#10B981",
+    id: 2, title: "機械学習の概要", subtitle: "教師あり・なし学習と強化学習", character: "📊", characterName: "データの錬金術師", quote: "データから知恵を紡ぎ出す", color: "#10B981",
     questions: [
       {id:1,type:"scenario",question:"あなたはKaggleコンペに参加中です。単一モデルでは精度が頭打ちのため、複数モデルを組み合わせて予測性能を向上させる手法を検討。この手法の総称は？",options:["転移学習","アンサンブル学習","強化学習","半教師あり学習"],correct:1,explanation:"アンサンブル学習はバギング、ブースティング等で複数モデルを組み合わせます。",keywords:["アンサンブル学習"]},
       {id:2,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「SVMで線形分離不可能なデータを扱うため、【A】を使ってデータを高次元空間に暗黙的に写像する。」",options:["活性化関数","カーネル","誤差関数","目的関数"],correct:1,explanation:"カーネル関数は高次元空間での内積を効率的に計算するトリックです。",keywords:["カーネル"]},
@@ -58,7 +58,7 @@ const quizData = {
   },
 
   chapter3: {
-    id: 3, title: "ニューラルネットワーク基礎", character: "🧠", color: "#8B5CF6",
+    id: 3, title: "ニューラルネットワーク基礎", subtitle: "パーセプトロンから最適化まで", character: "🧠", characterName: "神経回路の設計者", quote: "層を重ねて知能を築く", color: "#8B5CF6",
     questions: [
       {id:1,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「【A】は汎用的な処理を得意とし、複雑な分岐や逐次処理に適している。」",options:["GPU","TPU","CPU","FPGA"],correct:2,explanation:"CPUは複雑な分岐処理や逐次処理に優れています。",keywords:["CPU"]},
       {id:2,type:"scenario",question:"あなたはディープラーニングの学習環境を構築中です。多数のコアで並列計算を行い、行列演算を高速化できるプロセッサは？",options:["CPU","GPU","TPU","NPU"],correct:1,explanation:"GPUは数千のコアで並列計算を実行し、ディープラーニングの学習を高速化します。",keywords:["GPU"]},
@@ -84,7 +84,7 @@ const quizData = {
   },
 
   chapter4: {
-    id: 4, title: "CNN・RNN構造", character: "🔬", color: "#F59E0B",
+    id: 4, title: "CNN・RNN構造", subtitle: "画像認識と時系列処理の仕組み", character: "🔬", characterName: "構造の探求者", quote: "構造が機能を生み出す", color: "#F59E0B",
     questions: [
       {id:1,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「畳み込み演算で入力画像を走査する小さな重み行列を【A】と呼ぶ。」",options:["フィルタ","ストライド","パディング","プーリング"],correct:0,explanation:"カーネル（フィルタ）は畳み込み層の学習可能なパラメータです。",keywords:["カーネル","フィルタ"]},
       {id:2,type:"scenario",question:"あなたはCNNの動作原理を説明中です。カーネルを入力上でスライドさせながら内積を計算し、特徴マップを生成する演算は？",options:["プーリング操作","畳み込み操作","正規化操作","活性化操作"],correct:1,explanation:"畳み込み操作はカーネルと入力の局所領域の内積を計算します。",keywords:["畳み込み操作"]},
@@ -110,7 +110,7 @@ const quizData = {
   },
 
   chapter5: {
-    id: 5, title: "データ拡張・画像認識", character: "📸", color: "#EC4899",
+    id: 5, title: "データ拡張・画像認識", subtitle: "データ拡張とCNNアーキテクチャ", character: "📸", characterName: "画像の魔術師", quote: "一枚の画像に無限の可能性", color: "#EC4899",
     questions: [
       {id:1,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「【A】は2つの画像とそのラベルをランダムな比率λで線形補間して混合するデータ拡張手法。」",options:["CutMix","Cutout","Mixup","Random Erasing"],correct:2,explanation:"Mixupは画像とラベルの両方を線形補間し、過学習を抑制します。",keywords:["Mixup"]},
       {id:2,type:"scenario",question:"あなたは画像分類モデルの精度向上に取り組み中です。画像の矩形領域を別の画像のパッチで置換し、ラベルも面積比で混合する手法は？",options:["Mixup","CutMix","Cutout","Random Erasing"],correct:1,explanation:"CutMixはMixupより局所的な特徴学習に有効です。",keywords:["CutMix"]},
@@ -136,7 +136,7 @@ const quizData = {
   },
 
   chapter6: {
-    id: 6, title: "自然言語処理・音声処理", character: "💬", color: "#06B6D4",
+    id: 6, title: "自然言語処理・音声処理", subtitle: "テキストと音声を理解するAI", character: "💬", characterName: "言葉の翻訳者", quote: "言葉の壁を超えて繋がる", color: "#06B6D4",
     questions: [
       {id:1,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「【A】は文書を単語の出現頻度のベクトルで表現する手法で、語順情報は失われるがシンプルで効果的。」",options:["TF-IDF","Word2Vec","BoW (Bag-of-Words)","n-gram"],correct:2,explanation:"BoW（Bag-of-Words）は文書を単語の出現回数で表現します。",keywords:["BoW(Bag-of-Words)"]},
       {id:2,type:"scenario",question:"あなたは文書検索システムを構築中です。文書内で頻出かつ他の文書で稀な単語に高い重みを与え、重要度を計算したい。この手法は？",options:["BoW","TF-IDF","BM25","Word2Vec"],correct:1,explanation:"TF-IDFは単語の重要度を計算する古典的手法で、検索エンジンの基礎として広く使われています。",keywords:["TF-IDF"]},
@@ -162,7 +162,7 @@ const quizData = {
   },
 
   chapter7: {
-    id: 7, title: "深層強化学習・生成モデル", character: "🎮", color: "#EF4444",
+    id: 7, title: "深層強化学習・生成モデル", subtitle: "自律学習とコンテンツ生成", character: "🎮", characterName: "創造の冒険者", quote: "試行錯誤から最適解へ", color: "#EF4444",
     questions: [
       {id:1,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「【A】は非同期で複数のエージェントを並列実行し、勾配を集約して学習する深層強化学習手法。」",options:["DQN","A3C","PPO","SAC"],correct:1,explanation:"A3Cは並列化により学習を高速化し、経験の相関も低減します。",keywords:["A3C"]},
       {id:2,type:"scenario",question:"あなたはロボット制御に使う強化学習アルゴリズムを選定中です。方策の更新幅をクリッピングで制限し、安定した学習を実現する手法は？",options:["A3C","TRPO","PPO","SAC"],correct:2,explanation:"PPOはTRPOの複雑な制約を簡単なクリッピングで近似し、実装が容易で安定した学習を実現します。",keywords:["PPO"]},
@@ -188,7 +188,7 @@ const quizData = {
   },
 
   chapter8: {
-    id: 8, title: "AIプロジェクト・数理統計", character: "📈", color: "#14B8A6",
+    id: 8, title: "AIプロジェクト・数理統計", subtitle: "プロジェクト管理と統計基礎", character: "📈", characterName: "戦略の参謀", quote: "数字で語り、計画で勝つ", color: "#14B8A6",
     questions: [
       {id:1,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「【A】はCRISP-DMを機械学習向けに拡張し、品質保証の観点を追加したプロセスモデル。」",options:["CRISP-DM","CRISP-ML","MLOps","TDSP"],correct:1,explanation:"CRISP-ML（Q）は機械学習プロジェクトの品質管理を強調します。",keywords:["CRISP-ML"]},
       {id:2,type:"scenario",question:"あなたはAIプロジェクトの技術スタックを選定中です。NumPy、pandas、scikit-learn、TensorFlow、PyTorchなど豊富なライブラリがあり、最も広く使用される言語は？",options:["R","Julia","Python","Scala"],correct:2,explanation:"Pythonはデータサイエンスと機械学習のデファクトスタンダードです。",keywords:["Python"]},
@@ -214,7 +214,7 @@ const quizData = {
   },
 
   chapter9: {
-    id: 9, title: "法律・倫理", character: "⚖️", color: "#6366F1",
+    id: 9, title: "法律・倫理", subtitle: "AI開発の法規制と倫理問題", character: "⚖️", characterName: "正義の番人", quote: "技術に倫理の光を当てる", color: "#6366F1",
     questions: [
       {id:1,type:"fill_in_blank",question:"以下の文章を読み、【A】に当てはまるものを選べ。「【A】は特定の個人を識別できないよう加工され、復元もできないデータで、一定条件下で本人同意なく利用可能。」",options:["仮名加工情報","匿名加工情報","個人データ","保有個人データ"],correct:1,explanation:"匿名加工情報は再識別が不可能なレベルまで加工されたデータです。",keywords:["個人データ"]},
       {id:2,type:"scenario",question:"あなたは個人情報を他社に提供する必要があります。原則として本人同意が必要ですが、法令に基づく場合等は例外となります。この規定は？",options:["利用目的変更","第三者提供","委託","共同利用"],correct:1,explanation:"第三者提供には厳格な規制がありますが、例外規定も存在します。",keywords:["第三者提供"]},
