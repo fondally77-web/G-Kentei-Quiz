@@ -2,7 +2,982 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 
 // ============================================
-// G検定クイズデータ（9章×20問=180問）
+// スタイル定義（親アプリのCSS変数を使用）
+// ============================================
+const styles = `
+  .quiz-container {
+    width: 100%;
+    padding: 1.5rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .quiz-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .quiz-title {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #ffd700, #ff69b4, #9d46ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+  }
+
+  .quiz-subtitle {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  /* API設定ボタン */
+  .api-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: 1px solid;
+  }
+
+  .api-btn.configured {
+    background: rgba(0, 200, 83, 0.15);
+    color: #00c853;
+    border-color: rgba(0, 200, 83, 0.3);
+  }
+
+  .api-btn.not-configured {
+    background: rgba(255, 214, 0, 0.15);
+    color: #ffd600;
+    border-color: rgba(255, 214, 0, 0.3);
+  }
+
+  .api-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  /* 進捗パネル */
+  .progress-panel {
+    background: var(--color-bg-panel);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .progress-value {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #ffd600;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00c853, #00e5ff);
+    transition: width 0.5s ease;
+  }
+
+  /* メニューグリッド */
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .menu-btn {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    padding: 1.5rem;
+    border-radius: 16px;
+    text-align: left;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .menu-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(98, 0, 234, 0.3);
+  }
+
+  .menu-btn.violet {
+    background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  }
+
+  .menu-btn.rose {
+    background: linear-gradient(135deg, #e11d48, #f472b6);
+  }
+
+  .menu-btn.emerald {
+    background: linear-gradient(135deg, #059669, #34d399);
+  }
+
+  .menu-btn:disabled {
+    background: #374151;
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .menu-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .menu-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.25rem;
+  }
+
+  .menu-desc {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* 章選択グリッド */
+  .chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .chapter-card {
+    background: var(--color-bg-panel);
+    border-radius: 16px;
+    padding: 1.25rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: left;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chapter-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+  }
+
+  .chapter-card:hover {
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  .chapter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .chapter-icon {
+    font-size: 2rem;
+  }
+
+  .chapter-score {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+  }
+
+  .score-high { background: rgba(0,200,83,0.2); color: #00c853; }
+  .score-mid { background: rgba(255,214,0,0.2); color: #ffd600; }
+  .score-low { background: rgba(255,61,0,0.2); color: #ff3d00; }
+
+  .chapter-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.25rem;
+  }
+
+  .chapter-subtitle {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .chapter-quote {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  /* クイズ画面 */
+  .quiz-progress {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .quiz-back-btn {
+    background: transparent;
+    color: var(--color-text-muted);
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .quiz-back-btn:hover {
+    color: white;
+    background: transparent;
+  }
+
+  .quiz-info {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .quiz-count {
+    font-weight: 700;
+    color: white;
+  }
+
+  /* 問題カード */
+  .question-card {
+    background: var(--color-bg-panel);
+    border-radius: 24px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1.5rem;
+  }
+
+  .question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .character-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .character-icon {
+    font-size: 2.5rem;
+  }
+
+  .character-name {
+    font-weight: 700;
+  }
+
+  .character-subtitle {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .ai-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #f59e0b, #f97316);
+    transition: all 0.2s;
+  }
+
+  .ai-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .ai-btn.disabled {
+    background: #4b5563;
+  }
+
+  .question-text {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    color: white;
+  }
+
+  /* 選択肢 */
+  .options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .option-btn {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    text-align: left;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    color: white;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+
+  .option-btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .option-btn.selected {
+    background: rgba(98, 0, 234, 0.3);
+    border-color: var(--color-primary);
+  }
+
+  .option-btn.correct {
+    background: rgba(0, 200, 83, 0.2);
+    border-color: #00c853;
+    color: #00c853;
+  }
+
+  .option-btn.incorrect {
+    background: rgba(255, 61, 0, 0.2);
+    border-color: #ff3d00;
+    color: #ff3d00;
+  }
+
+  .option-label {
+    font-weight: 700;
+    color: var(--color-text-muted);
+    margin-right: 0.75rem;
+  }
+
+  /* 解説パネル */
+  .explanation-panel {
+    background: var(--color-bg-panel);
+    border-radius: 24px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1.5rem;
+  }
+
+  .explanation-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .explanation-title.correct { color: #00c853; }
+  .explanation-title.incorrect { color: #ff3d00; }
+
+  .explanation-text {
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .keyword {
+    font-size: 0.75rem;
+    background: rgba(98, 0, 234, 0.2);
+    color: var(--color-primary-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  /* アクションボタン */
+  .action-btns {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .primary-btn {
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--color-primary), #ec4899);
+    transition: all 0.2s;
+  }
+
+  .primary-btn:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  .primary-btn:disabled {
+    background: #4b5563;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .primary-btn.success {
+    background: linear-gradient(90deg, #059669, #00e5ff);
+  }
+
+  /* 結果画面 */
+  .result-card {
+    background: var(--color-bg-panel);
+    border-radius: 24px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .result-emoji {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  .result-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .result-score {
+    font-size: 4rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+  }
+
+  .result-score.high { color: #00c853; }
+  .result-score.mid { color: #ffd600; }
+  .result-score.low { color: #ff3d00; }
+
+  .result-detail {
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .result-message {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .result-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .result-btn {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+
+  .result-btn.primary {
+    background: linear-gradient(90deg, var(--color-primary), #ec4899);
+  }
+
+  .result-btn.secondary {
+    background: rgba(255,255,255,0.1);
+  }
+
+  /* スコアリスト */
+  .score-list {
+    background: var(--color-bg-panel);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .score-list-title {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .score-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .score-name {
+    font-size: 0.875rem;
+    width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .score-bar-bg {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    transition: width 0.5s;
+  }
+
+  .score-bar-fill.high { background: #00c853; }
+  .score-bar-fill.mid { background: #ffd600; }
+  .score-bar-fill.low { background: #ff3d00; }
+  .score-bar-fill.none { background: #4b5563; }
+
+  .score-percent {
+    font-size: 0.875rem;
+    font-weight: 700;
+    width: 48px;
+    text-align: right;
+  }
+
+  .score-percent.high { color: #00c853; }
+  .score-percent.mid { color: #ffd600; }
+  .score-percent.low { color: #ff3d00; }
+  .score-percent.none { color: var(--color-text-muted); }
+
+  /* モーダル */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-content {
+    background: var(--color-bg-panel);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+
+  .modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .modal-close {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .modal-close:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 1.5rem;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+
+  /* チャットUI */
+  .chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .chat-bubble {
+    max-width: 85%;
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
+  }
+
+  .chat-bubble.user {
+    background: var(--color-primary);
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+
+  .chat-bubble.assistant {
+    background: rgba(255,255,255,0.1);
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+  }
+
+  .chat-bubble-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .chat-bubble-text {
+    font-size: 0.875rem;
+    white-space: pre-wrap;
+    line-height: 1.5;
+  }
+
+  .chat-suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .chat-suggestion {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    text-align: left;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    transition: all 0.2s;
+  }
+
+  .chat-suggestion:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .chat-input-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .chat-input {
+    flex: 1;
+    background: var(--color-bg-input);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: white;
+  }
+
+  .chat-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .chat-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .chat-send-btn {
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    background: linear-gradient(90deg, var(--color-primary), #ec4899);
+  }
+
+  .chat-send-btn:disabled {
+    background: #4b5563;
+    cursor: not-allowed;
+  }
+
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 0.75rem 1rem;
+  }
+
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--color-text-muted);
+    border-radius: 50%;
+    animation: typingBounce 1s infinite;
+  }
+
+  .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes typingBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* 警告ボックス */
+  .warning-box {
+    background: rgba(255, 214, 0, 0.1);
+    border: 1px solid rgba(255, 214, 0, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .warning-text {
+    color: #ffd600;
+    margin-bottom: 0.5rem;
+  }
+
+  .warning-btn {
+    background: #ffd600;
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+
+  /* 情報ボックス */
+  .info-box {
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+    padding: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .info-title {
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .info-list {
+    list-style: decimal;
+    list-style-position: inside;
+    color: var(--color-text-muted);
+  }
+
+  .info-list a {
+    color: var(--color-primary-light);
+  }
+
+  /* フォーム要素 */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .form-input-wrapper {
+    position: relative;
+  }
+
+  .form-input {
+    width: 100%;
+    background: var(--color-bg-input);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 0.75rem 3rem 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: white;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .form-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    padding: 0.25rem;
+    color: var(--color-text-muted);
+  }
+
+  .form-toggle:hover {
+    color: white;
+    background: transparent;
+  }
+
+  .form-btns {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .form-btn {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+
+  .form-btn.secondary {
+    background: rgba(255,255,255,0.1);
+  }
+
+  .form-btn.primary {
+    background: linear-gradient(90deg, var(--color-primary), #ec4899);
+  }
+
+  /* 弱点分析 */
+  .analysis-empty {
+    background: var(--color-bg-panel);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .analysis-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .analysis-item {
+    background: var(--color-bg-panel);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1rem;
+  }
+
+  .analysis-item-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .analysis-item-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .analysis-item-info {
+    flex: 1;
+  }
+
+  .analysis-item-title {
+    font-weight: 700;
+    color: white;
+  }
+
+  .analysis-item-subtitle {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+  }
+
+  .analysis-item-count {
+    text-align: right;
+  }
+
+  .analysis-count-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ff3d00;
+  }
+
+  .analysis-count-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .analysis-bar {
+    margin-top: 0.75rem;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .analysis-bar-fill {
+    height: 100%;
+    background: #ff3d00;
+    transition: width 0.5s;
+  }
+
+  /* レスポンシブ */
+  @media (max-width: 640px) {
+    .quiz-title {
+      font-size: 1.5rem;
+    }
+
+    .menu-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .chapter-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .question-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .ai-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+`;
+
+// ============================================
+// G検定試験仕様問題（9章×20問=180問）
 // ============================================
 
 const quizData = {
@@ -251,93 +1226,69 @@ function ApiKeyModal({ isOpen, onClose, apiKey, setApiKey }) {
   const [showKey, setShowKey] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setTempKey(apiKey);
-    }
+    if (isOpen) setTempKey(apiKey);
   }, [isOpen, apiKey]);
 
   const handleSave = () => {
     setApiKey(tempKey);
-    try {
-      localStorage.setItem('anthropic-api-key', tempKey);
-    } catch (e) {
-      console.log('Failed to save API key');
-    }
+    try { localStorage.setItem('anthropic-api-key', tempKey); } catch (e) {}
     onClose();
   };
 
   const handleClear = () => {
     setTempKey('');
     setApiKey('');
-    try {
-      localStorage.removeItem('anthropic-api-key');
-    } catch (e) {
-      console.log('Failed to remove API key');
-    }
+    try { localStorage.removeItem('anthropic-api-key'); } catch (e) {}
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-slate-800 rounded-3xl w-full max-w-md p-6 border border-slate-600 shadow-2xl">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-bold text-white">🔑 API設定</h3>
-          <button 
-            onClick={onClose}
-            className="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors text-white"
-          >
-            ✕
-          </button>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <div className="modal-header">
+          <div className="modal-title">
+            <span>🔑</span>
+            <span style={{ fontWeight: 700 }}>API設定</span>
+          </div>
+          <button className="modal-close" onClick={onClose}>✕</button>
         </div>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm text-slate-400 mb-2">Anthropic APIキー</label>
-            <div className="relative">
+        <div className="modal-body">
+          <div className="form-group">
+            <label className="form-label">Anthropic APIキー</label>
+            <div className="form-input-wrapper">
               <input
                 type={showKey ? 'text' : 'password'}
                 value={tempKey}
                 onChange={(e) => setTempKey(e.target.value)}
                 placeholder="sk-ant-api03-..."
-                className="w-full bg-slate-700 border border-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 text-white placeholder-slate-500 pr-12"
+                className="form-input"
               />
-              <button
-                onClick={() => setShowKey(!showKey)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-              >
+              <button className="form-toggle" onClick={() => setShowKey(!showKey)}>
                 {showKey ? '🙈' : '👁'}
               </button>
             </div>
           </div>
 
-          <div className="bg-slate-700/50 rounded-xl p-4 text-sm">
-            <p className="text-slate-300 mb-2">💡 APIキーの取得方法</p>
-            <ol className="text-slate-400 space-y-1 list-decimal list-inside">
-              <li><a href="https://console.anthropic.com/" target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">Anthropic Console</a> にアクセス</li>
+          <div className="info-box" style={{ marginBottom: '1rem' }}>
+            <p className="info-title">💡 APIキーの取得方法</p>
+            <ol className="info-list">
+              <li><a href="https://console.anthropic.com/" target="_blank" rel="noopener noreferrer">Anthropic Console</a> にアクセス</li>
               <li>アカウントを作成またはログイン</li>
               <li>API Keys からキーを発行</li>
             </ol>
           </div>
 
-          <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-sm">
-            <p className="text-amber-400">⚠️ 注意</p>
-            <p className="text-slate-400 mt-1">APIキーはブラウザに保存されます。共有PCでの使用にはご注意ください。AI質問機能を使用するとAPI使用料が発生します。</p>
+          <div className="warning-box">
+            <p className="warning-text">⚠️ 注意</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
+              APIキーはブラウザに保存されます。共有PCでの使用にはご注意ください。
+            </p>
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <button
-              onClick={handleClear}
-              className="flex-1 py-3 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 text-white transition-colors"
-            >
-              クリア
-            </button>
-            <button
-              onClick={handleSave}
-              className="flex-1 py-3 rounded-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white transition-colors"
-            >
-              保存
-            </button>
+          <div className="form-btns">
+            <button className="form-btn secondary" onClick={handleClear}>クリア</button>
+            <button className="form-btn primary" onClick={handleSave}>保存</button>
           </div>
         </div>
       </div>
@@ -345,8 +1296,9 @@ function ApiKeyModal({ isOpen, onClose, apiKey, setApiKey }) {
   );
 }
 
+
 // ============================================
-// AI質問モーダルコンポーネント
+// AI質問モーダル
 // ============================================
 function AiChatModal({ isOpen, onClose, chapter, currentQuestion, apiKey, onOpenApiSettings }) {
   const [messages, setMessages] = useState([]);
@@ -355,26 +1307,17 @@ function AiChatModal({ isOpen, onClose, chapter, currentQuestion, apiKey, onOpen
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
+    if (messagesEndRef.current) messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   useEffect(() => {
-    if (isOpen) {
-      setMessages([]);
-      setInput('');
-    }
+    if (isOpen) { setMessages([]); setInput(''); }
   }, [isOpen, currentQuestion?.id]);
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
-
     if (!apiKey) {
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: 'APIキーが設定されていません。設定画面からAPIキーを入力してください。'
-      }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'APIキーが設定されていません。' }]);
       return;
     }
 
@@ -385,25 +1328,16 @@ function AiChatModal({ isOpen, onClose, chapter, currentQuestion, apiKey, onOpen
 
     try {
       const systemPrompt = `あなたは「${chapter.characterName}」です。G検定の学習をサポートしています。
+キャラクター: ${chapter.character} 名言：「${chapter.quote}」
+担当分野：${chapter.title}（${chapter.subtitle}）
 
-キャラクター設定：
-- 名言：「${chapter.quote}」
-- 担当分野：${chapter.title}（${chapter.subtitle}）
+現在の問題：${currentQuestion.question}
+選択肢：${currentQuestion.options.map((o, i) => `${['A','B','C','D'][i]}. ${o}`).join(' / ')}
+正解：${['A','B','C','D'][currentQuestion.correct]}. ${currentQuestion.options[currentQuestion.correct]}
+解説：${currentQuestion.explanation}
+キーワード：${currentQuestion.keywords.join(', ')}
 
-現在、学習者は以下の問題に取り組んでいます：
-【問題】${currentQuestion.question}
-【選択肢】${currentQuestion.options.map((o, i) => `${['A','B','C','D'][i]}. ${o}`).join(' / ')}
-【正解】${['A','B','C','D'][currentQuestion.correct]}. ${currentQuestion.options[currentQuestion.correct]}
-【解説】${currentQuestion.explanation}
-【関連キーワード】${currentQuestion.keywords.join(', ')}
-
-以下のルールで回答してください：
-1. キャラクターになりきって、親しみやすく教える
-2. この問題に関連した内容を中心に説明する
-3. G検定に出題される重要ポイントを押さえる
-4. 具体例を交えて分かりやすく説明する
-5. 回答は簡潔に（300文字程度を目安）
-6. 直接答えを教えるのではなく、理解を助けるヒントを与える`;
+ルール: 親しみやすく、300文字程度で簡潔に、直接答えではなくヒントを。`;
 
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -417,34 +1351,15 @@ function AiChatModal({ isOpen, onClose, chapter, currentQuestion, apiKey, onOpen
           model: 'claude-sonnet-4-20250514',
           max_tokens: 1000,
           system: systemPrompt,
-          messages: [
-            ...messages.map(m => ({ role: m.role, content: m.content })),
-            { role: 'user', content: userMessage }
-          ]
+          messages: [...messages.map(m => ({ role: m.role, content: m.content })), { role: 'user', content: userMessage }]
         })
       });
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error?.message || `API Error: ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`API Error: ${response.status}`);
       const data = await response.json();
-      const assistantMessage = data.content[0].text;
-      setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: data.content[0].text }]);
     } catch (error) {
-      let errorMessage = 'エラーが発生しました。';
-      if (error.message.includes('401') || error.message.includes('invalid')) {
-        errorMessage = 'APIキーが無効です。設定画面から正しいAPIキーを入力してください。';
-      } else if (error.message.includes('429')) {
-        errorMessage = 'API使用量の上限に達しました。しばらく待ってからお試しください。';
-      } else if (error.message.includes('network') || error.message.includes('fetch')) {
-        errorMessage = 'ネットワークエラーが発生しました。インターネット接続を確認してください。';
-      }
-      setMessages(prev => [...prev, {
-        role: 'assistant',
-        content: errorMessage
-      }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'エラーが発生しました。APIキーを確認してください。' }]);
     }
     setIsLoading(false);
   };
@@ -452,84 +1367,67 @@ function AiChatModal({ isOpen, onClose, chapter, currentQuestion, apiKey, onOpen
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-slate-800 rounded-3xl w-full max-w-lg h-[80vh] max-h-[600px] flex flex-col border border-slate-600 shadow-2xl overflow-hidden">
-        <div className="flex-shrink-0 p-4 border-b border-slate-700 flex items-center justify-between bg-slate-800/90">
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">{chapter.character}</span>
+    <div className="modal-overlay">
+      <div className="modal-content" style={{ height: '80vh', maxHeight: '600px' }}>
+        <div className="modal-header">
+          <div className="modal-title">
+            <span style={{ fontSize: '2rem' }}>{chapter.character}</span>
             <div>
-              <div className="font-bold" style={{ color: chapter.color }}>{chapter.characterName}</div>
-              <div className="text-xs text-slate-400">に質問する</div>
+              <div style={{ fontWeight: 700, color: chapter.color }}>{chapter.characterName}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>に質問する</div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button 
-              onClick={onOpenApiSettings}
-              className="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors text-white text-sm"
-              title="API設定"
-            >
-              ⚙️
-            </button>
-            <button onClick={onClose} className="w-10 h-10 rounded-full bg-slate-700 hover:bg-slate-600 flex items-center justify-center transition-colors text-white">✕</button>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button className="modal-close" onClick={onOpenApiSettings} title="API設定">⚙️</button>
+            <button className="modal-close" onClick={onClose}>✕</button>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+        <div className="modal-body">
           {!apiKey && (
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-center">
-              <p className="text-amber-400 mb-2">⚠️ APIキーが未設定です</p>
-              <button
-                onClick={onOpenApiSettings}
-                className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-black rounded-lg font-bold text-sm transition-colors"
-              >
-                APIキーを設定する
-              </button>
+            <div className="warning-box" style={{ marginBottom: '1rem' }}>
+              <p className="warning-text">⚠️ APIキーが未設定です</p>
+              <button className="warning-btn" onClick={onOpenApiSettings}>APIキーを設定する</button>
             </div>
           )}
 
           {messages.length === 0 && apiKey && (
-            <div className="text-center text-slate-500 py-4">
-              <p className="mb-4 text-sm">この問題について質問できます</p>
-              <div className="space-y-2">
-                {['この問題のポイントを教えて', 'なぜこれが正解なの？', '関連する概念を説明して', '覚え方のコツはある？'].map((suggestion, idx) => (
-                  <button key={idx} onClick={() => setInput(suggestion)} className="block w-full text-left p-3 bg-slate-700/50 hover:bg-slate-600/50 rounded-xl text-sm text-slate-300 border border-slate-600 transition-colors">
-                    💬 {suggestion}
-                  </button>
+            <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+              <p style={{ color: 'var(--color-text-muted)', marginBottom: '1rem', fontSize: '0.875rem' }}>この問題について質問できます</p>
+              <div className="chat-suggestions">
+                {['この問題のポイントを教えて', 'なぜこれが正解なの？', '関連する概念を説明して', '覚え方のコツはある？'].map((s, i) => (
+                  <button key={i} className="chat-suggestion" onClick={() => setInput(s)}>💬 {s}</button>
                 ))}
               </div>
             </div>
           )}
 
-          {messages.map((msg, idx) => (
-            <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[85%] p-3 rounded-2xl ${msg.role === 'user' ? 'bg-purple-600 rounded-br-sm' : 'bg-slate-700 rounded-bl-sm'}`}>
+          <div className="chat-messages">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`chat-bubble ${msg.role}`}>
                 {msg.role === 'assistant' && (
-                  <div className="flex items-center gap-2 mb-2 text-xs font-bold" style={{ color: chapter.color }}>
-                    <span>{chapter.character}</span>
-                    {chapter.characterName}
+                  <div className="chat-bubble-header" style={{ color: chapter.color }}>
+                    <span>{chapter.character}</span> {chapter.characterName}
                   </div>
                 )}
-                <p className="text-sm whitespace-pre-wrap text-white">{msg.content}</p>
+                <p className="chat-bubble-text">{msg.content}</p>
               </div>
-            </div>
-          ))}
-
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-slate-700 p-3 rounded-2xl rounded-bl-sm">
-                <div className="flex items-center gap-1">
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            ))}
+            {isLoading && (
+              <div className="chat-bubble assistant">
+                <div className="typing-indicator">
+                  <span className="typing-dot"></span>
+                  <span className="typing-dot"></span>
+                  <span className="typing-dot"></span>
                 </div>
               </div>
-            </div>
-          )}
-          <div ref={messagesEndRef} />
+            )}
+            <div ref={messagesEndRef} />
+          </div>
         </div>
 
-        <div className="flex-shrink-0 p-4 border-t border-slate-700 bg-slate-800/90">
-          <div className="flex gap-2">
+        <div className="modal-footer">
+          <div className="chat-input-row">
             <input
               type="text"
               value={input}
@@ -537,21 +1435,16 @@ function AiChatModal({ isOpen, onClose, chapter, currentQuestion, apiKey, onOpen
               onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
               placeholder={apiKey ? "質問を入力..." : "APIキーを設定してください"}
               disabled={!apiKey}
-              className="flex-1 bg-slate-700 border border-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500 text-white placeholder-slate-400 disabled:opacity-50"
+              className="chat-input"
             />
-            <button
-              onClick={sendMessage}
-              disabled={!input.trim() || isLoading || !apiKey}
-              className={`px-5 py-3 rounded-xl font-bold text-sm transition-all text-white ${input.trim() && !isLoading && apiKey ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}
-            >
-              送信
-            </button>
+            <button onClick={sendMessage} disabled={!input.trim() || isLoading || !apiKey} className="chat-send-btn">送信</button>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
 
 // ============================================
 // メインアプリケーション
@@ -571,7 +1464,6 @@ function GKenteiQuizApp() {
   const [randomQuestions, setRandomQuestions] = useState([]);
   const [apiKey, setApiKey] = useState('');
 
-  // localStorageからの読み込み
   useEffect(() => {
     try {
       const savedScores = localStorage.getItem('gkentei-scores-v3');
@@ -580,24 +1472,22 @@ function GKenteiQuizApp() {
       if (savedWrong) setWrongQuestions(JSON.parse(savedWrong));
       const savedApiKey = localStorage.getItem('anthropic-api-key');
       if (savedApiKey) setApiKey(savedApiKey);
-    } catch (e) {
-      console.log('Storage not available');
-    }
+    } catch (e) {}
   }, []);
 
-  // 進捗の保存
   const saveProgress = (scores, wrong) => {
     try {
       localStorage.setItem('gkentei-scores-v3', JSON.stringify(scores));
       localStorage.setItem('gkentei-wrong-v3', JSON.stringify(wrong));
-    } catch (e) {
-      console.log('Failed to save progress');
-    }
+    } catch (e) {}
   };
 
-  // 章の開始
   const startChapter = (chapterId) => {
     const chapter = Object.values(quizData).find(c => c.id === chapterId);
+    if (!chapter || chapter.questions.length === 0) {
+      alert('この章の問題はまだ準備中です');
+      return;
+    }
     setCurrentChapter(chapter);
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
@@ -607,7 +1497,6 @@ function GKenteiQuizApp() {
     setMode('quiz');
   };
 
-  // ランダム出題
   const startRandomQuiz = () => {
     const allQuestions = [];
     Object.values(quizData).forEach(chapter => {
@@ -615,17 +1504,13 @@ function GKenteiQuizApp() {
         allQuestions.push({ ...q, chapterId: chapter.id, chapterTitle: chapter.title });
       });
     });
+    if (allQuestions.length === 0) {
+      alert('問題がありません');
+      return;
+    }
     const shuffled = allQuestions.sort(() => Math.random() - 0.5).slice(0, 20);
     setRandomQuestions(shuffled);
-    setCurrentChapter({ 
-      id: 'random',
-      title: 'ランダム出題', 
-      subtitle: '全章から20問', 
-      character: '🎲', 
-      characterName: 'ランダムマスター',
-      quote: '運と実力を試せ！',
-      color: '#6366F1' 
-    });
+    setCurrentChapter({ id: 'random', title: 'ランダム出題', subtitle: '全章から20問', character: '🎲', characterName: 'ランダムマスター', quote: '運と実力を試せ！', color: '#6366F1' });
     setCurrentQuestionIndex(0);
     setSelectedAnswer(null);
     setShowExplanation(false);
@@ -634,7 +1519,6 @@ function GKenteiQuizApp() {
     setMode('random');
   };
 
-  // 復習モードの開始
   const startReview = () => {
     if (wrongQuestions.length === 0) return;
     setIsReviewMode(true);
@@ -645,71 +1529,51 @@ function GKenteiQuizApp() {
     setMode('review');
   };
 
-  // 弱点分析データの取得
   const getWeakAnalysis = () => {
     const chapterWrongCount = {};
     wrongQuestions.forEach(wq => {
       chapterWrongCount[wq.chapterId] = (chapterWrongCount[wq.chapterId] || 0) + 1;
     });
-    
-    return Object.entries(chapterWrongCount)
-      .map(([chapterId, count]) => ({
-        chapter: quizData[`chapter${chapterId}`],
-        count
-      }))
-      .sort((a, b) => b.count - a.count);
+    return Object.entries(chapterWrongCount).map(([chapterId, count]) => ({
+      chapter: quizData[`chapter${chapterId}`],
+      count
+    })).sort((a, b) => b.count - a.count);
   };
 
-  // 回答選択
   const selectAnswer = (index) => {
     if (showExplanation) return;
     setSelectedAnswer(index);
   };
 
-  // 回答確定
   const confirmAnswer = () => {
     if (selectedAnswer === null) return;
     setShowExplanation(true);
     
     let currentQuestion;
-    if (mode === 'random') {
-      currentQuestion = randomQuestions[currentQuestionIndex];
-    } else if (isReviewMode && mode === 'review') {
-      currentQuestion = wrongQuestions[currentQuestionIndex];
-    } else {
-      currentQuestion = currentChapter.questions[currentQuestionIndex];
-    }
+    if (mode === 'random') currentQuestion = randomQuestions[currentQuestionIndex];
+    else if (isReviewMode && mode === 'review') currentQuestion = wrongQuestions[currentQuestionIndex];
+    else currentQuestion = currentChapter.questions[currentQuestionIndex];
     
     const isCorrect = selectedAnswer === currentQuestion.correct;
     setAnswers([...answers, { questionId: currentQuestion.id, selected: selectedAnswer, correct: isCorrect }]);
     
-    // 間違えた問題を記録（復習モード以外）
     if (!isCorrect && mode !== 'review') {
       const chapterId = currentQuestion.chapterId || currentChapter?.id;
       const newWrong = [...wrongQuestions];
       const exists = newWrong.find(w => w.chapterId === chapterId && w.questionId === currentQuestion.id);
       if (!exists && chapterId !== 'random') {
-        newWrong.push({ 
-          ...currentQuestion, 
-          chapterId, 
-          chapterTitle: currentQuestion.chapterTitle || currentChapter?.title 
-        });
+        newWrong.push({ ...currentQuestion, chapterId, chapterTitle: currentQuestion.chapterTitle || currentChapter?.title });
         setWrongQuestions(newWrong);
         saveProgress(chapterScores, newWrong);
       }
     }
   };
 
-  // 次の問題へ
   const nextQuestion = () => {
     let questions;
-    if (mode === 'random') {
-      questions = randomQuestions;
-    } else if (isReviewMode && mode === 'review') {
-      questions = wrongQuestions;
-    } else {
-      questions = currentChapter.questions;
-    }
+    if (mode === 'random') questions = randomQuestions;
+    else if (isReviewMode && mode === 'review') questions = wrongQuestions;
+    else questions = currentChapter.questions;
     
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -720,7 +1584,6 @@ function GKenteiQuizApp() {
     }
   };
 
-  // クイズ終了
   const finishQuiz = () => {
     if (mode === 'review') {
       const stillWrong = wrongQuestions.filter((q, idx) => {
@@ -745,13 +1608,10 @@ function GKenteiQuizApp() {
     setMode('results');
   };
 
-  // 全体の進捗計算
   const calculateOverallProgress = () => {
     const totalChapters = Object.keys(quizData).length;
     const completedChapters = Object.keys(chapterScores).length;
-    const averageScore = completedChapters > 0
-      ? Math.round(Object.values(chapterScores).reduce((a, b) => a + b, 0) / completedChapters)
-      : 0;
+    const averageScore = completedChapters > 0 ? Math.round(Object.values(chapterScores).reduce((a, b) => a + b, 0) / completedChapters) : 0;
     return { completedChapters, totalChapters, averageScore };
   };
 
@@ -761,104 +1621,76 @@ function GKenteiQuizApp() {
   const renderHome = () => {
     const progress = calculateOverallProgress();
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 md:p-8">
-        <header className="text-center mb-8">
-          <h1 className="text-3xl md:text-5xl font-black mb-2 bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-            G検定クイズマスター
-          </h1>
-          <p className="text-slate-400 text-sm md:text-base">全180問でディープラーニングをマスターしよう！</p>
+      <div className="quiz-container">
+        <header className="quiz-header">
+          <h1 className="quiz-title">G検定クイズマスター</h1>
+          <p className="quiz-subtitle">全180問でディープラーニングをマスターしよう！</p>
         </header>
 
-        {/* API設定ボタン */}
-        <div className="max-w-2xl mx-auto mb-4 flex justify-end">
-          <button
-            onClick={() => setIsApiModalOpen(true)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-              apiKey 
-                ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30' 
-                : 'bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30'
-            }`}
-          >
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+          <button className={`api-btn ${apiKey ? 'configured' : 'not-configured'}`} onClick={() => setIsApiModalOpen(true)}>
             {apiKey ? '✓ API設定済み' : '⚙️ API設定'}
           </button>
         </div>
 
-        {/* 進捗バー */}
-        <div className="max-w-2xl mx-auto mb-8 bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-slate-400">学習進捗</span>
-            <span className="text-sm font-bold text-yellow-400">{progress.completedChapters}/{progress.totalChapters}章 完了</span>
+        <div className="progress-panel">
+          <div className="progress-header">
+            <span className="progress-label">学習進捗</span>
+            <span className="progress-value">{progress.completedChapters}/{progress.totalChapters}章 完了</span>
           </div>
-          <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-500"
-              style={{ width: `${(progress.completedChapters / progress.totalChapters) * 100}%` }} />
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${(progress.completedChapters / progress.totalChapters) * 100}%` }} />
           </div>
           {progress.averageScore > 0 && (
-            <p className="text-center mt-2 text-sm text-slate-400">
-              平均スコア: <span className="text-white font-bold">{progress.averageScore}%</span>
+            <p style={{ textAlign: 'center', marginTop: '0.5rem', fontSize: '0.875rem', color: 'var(--color-text-muted)' }}>
+              平均スコア: <span style={{ color: 'white', fontWeight: 700 }}>{progress.averageScore}%</span>
             </p>
           )}
         </div>
 
-        {/* メニューボタン */}
-        <div className="max-w-2xl mx-auto grid grid-cols-2 gap-4 mb-8">
-          <button onClick={() => setMode('chapter')}
-            className="bg-gradient-to-br from-indigo-600 to-purple-700 hover:from-indigo-500 hover:to-purple-600 p-6 rounded-2xl text-left transition-all hover:scale-105">
-            <div className="text-3xl mb-2">📚</div>
-            <div className="font-bold text-lg">章別学習</div>
-            <div className="text-sm text-slate-300">9章 × 20問</div>
+        <div className="menu-grid">
+          <button className="menu-btn" onClick={() => setMode('chapter')}>
+            <div className="menu-icon">📚</div>
+            <div className="menu-title">章別学習</div>
+            <div className="menu-desc">9章 × 20問</div>
           </button>
-          <button onClick={startRandomQuiz}
-            className="bg-gradient-to-br from-violet-600 to-indigo-700 hover:from-violet-500 hover:to-indigo-600 p-6 rounded-2xl text-left transition-all hover:scale-105">
-            <div className="text-3xl mb-2">🎲</div>
-            <div className="font-bold text-lg">ランダム</div>
-            <div className="text-sm text-slate-300">全章から20問</div>
+          <button className="menu-btn violet" onClick={startRandomQuiz}>
+            <div className="menu-icon">🎲</div>
+            <div className="menu-title">ランダム</div>
+            <div className="menu-desc">全章から20問</div>
           </button>
-          <button onClick={startReview} disabled={wrongQuestions.length === 0}
-            className={`p-6 rounded-2xl text-left transition-all ${wrongQuestions.length > 0 ? 'bg-gradient-to-br from-rose-600 to-pink-700 hover:from-rose-500 hover:to-pink-600 hover:scale-105' : 'bg-slate-700 opacity-50 cursor-not-allowed'}`}>
-            <div className="text-3xl mb-2">🔄</div>
-            <div className="font-bold text-lg">復習モード</div>
-            <div className="text-sm text-slate-300">{wrongQuestions.length > 0 ? `${wrongQuestions.length}問` : '間違いなし'}</div>
+          <button className="menu-btn rose" onClick={startReview} disabled={wrongQuestions.length === 0}>
+            <div className="menu-icon">🔄</div>
+            <div className="menu-title">復習モード</div>
+            <div className="menu-desc">{wrongQuestions.length > 0 ? `${wrongQuestions.length}問` : '間違いなし'}</div>
           </button>
-          <button onClick={() => setMode('analysis')}
-            className="bg-gradient-to-br from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 p-6 rounded-2xl text-left transition-all hover:scale-105">
-            <div className="text-3xl mb-2">📊</div>
-            <div className="font-bold text-lg">弱点分析</div>
-            <div className="text-sm text-slate-300">苦手分野を確認</div>
+          <button className="menu-btn emerald" onClick={() => setMode('analysis')}>
+            <div className="menu-icon">📊</div>
+            <div className="menu-title">弱点分析</div>
+            <div className="menu-desc">苦手分野を確認</div>
           </button>
         </div>
 
-        {/* 弱点診断 */}
         {Object.keys(chapterScores).length > 0 && (
-          <div className="max-w-2xl mx-auto bg-slate-800/50 rounded-2xl p-4 border border-slate-700">
-            <h3 className="font-bold mb-4 flex items-center gap-2"><span>📊</span> 章別スコア</h3>
-            <div className="space-y-2">
-              {Object.values(quizData).map(chapter => {
-                const score = chapterScores[chapter.id];
-                return (
-                  <div key={chapter.id} className="flex items-center gap-3">
-                    <span className="text-sm w-32 truncate">{chapter.title}</span>
-                    <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div className={`h-full transition-all duration-500 ${score >= 80 ? 'bg-green-500' : score >= 60 ? 'bg-yellow-500' : score ? 'bg-red-500' : 'bg-slate-600'}`}
-                        style={{ width: `${score || 0}%` }} />
-                    </div>
-                    <span className={`text-sm w-12 text-right font-bold ${score >= 80 ? 'text-green-400' : score >= 60 ? 'text-yellow-400' : score ? 'text-red-400' : 'text-slate-500'}`}>
-                      {score !== undefined ? `${score}%` : '—'}
-                    </span>
+          <div className="score-list">
+            <h3 className="score-list-title"><span>📊</span> 章別スコア</h3>
+            {Object.values(quizData).map(chapter => {
+              const score = chapterScores[chapter.id];
+              const scoreClass = score >= 80 ? 'high' : score >= 60 ? 'mid' : score ? 'low' : 'none';
+              return (
+                <div key={chapter.id} className="score-item">
+                  <span className="score-name">{chapter.title}</span>
+                  <div className="score-bar-bg">
+                    <div className={`score-bar-fill ${scoreClass}`} style={{ width: `${score || 0}%` }} />
                   </div>
-                );
-              })}
-            </div>
+                  <span className={`score-percent ${scoreClass}`}>{score !== undefined ? `${score}%` : '—'}</span>
+                </div>
+              );
+            })}
           </div>
         )}
 
-        {/* APIキー設定モーダル */}
-        <ApiKeyModal
-          isOpen={isApiModalOpen}
-          onClose={() => setIsApiModalOpen(false)}
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-        />
+        <ApiKeyModal isOpen={isApiModalOpen} onClose={() => setIsApiModalOpen(false)} apiKey={apiKey} setApiKey={setApiKey} />
       </div>
     );
   };
@@ -867,30 +1699,23 @@ function GKenteiQuizApp() {
   // 章選択画面
   // ============================================
   const renderChapterSelect = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 md:p-8">
-      <button onClick={() => setMode('home')} className="mb-6 flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-        <span>←</span> ホームに戻る
-      </button>
-      <h2 className="text-2xl font-bold mb-6 text-center">章を選択</h2>
-      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="quiz-container">
+      <button className="quiz-back-btn" onClick={() => setMode('home')}>← ホームに戻る</button>
+      <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>章を選択</h2>
+      <div className="chapter-grid">
         {Object.values(quizData).map(chapter => {
           const score = chapterScores[chapter.id];
+          const scoreClass = score >= 80 ? 'high' : score >= 60 ? 'mid' : score ? 'low' : '';
           return (
-            <button key={chapter.id} onClick={() => startChapter(chapter.id)}
-              className="bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 hover:border-slate-500 rounded-2xl p-5 text-left transition-all hover:scale-102"
-              style={{ borderLeftColor: chapter.color, borderLeftWidth: '4px' }}>
-              <div className="flex items-start justify-between mb-3">
-                <span className="text-3xl">{chapter.character}</span>
-                {score !== undefined && (
-                  <span className={`text-sm font-bold px-2 py-1 rounded-full ${score >= 80 ? 'bg-green-500/20 text-green-400' : score >= 60 ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'}`}>
-                    {score}%
-                  </span>
-                )}
+            <button key={chapter.id} className="chapter-card" onClick={() => startChapter(chapter.id)} style={{ '--chapter-color': chapter.color }}>
+              <style>{`.chapter-card[style*="--chapter-color: ${chapter.color}"]::before { background: ${chapter.color}; }`}</style>
+              <div className="chapter-header">
+                <span className="chapter-icon">{chapter.character}</span>
+                {score !== undefined && <span className={`chapter-score ${scoreClass}`}>{score}%</span>}
               </div>
-              <div className="font-bold text-lg mb-1">第{chapter.id}章: {chapter.title}</div>
-              <div className="text-sm text-slate-400 mb-2">{chapter.subtitle}</div>
-              <div className="text-xs text-slate-500 italic">「{chapter.quote}」</div>
-              <div className="text-xs text-slate-500 mt-2">20問</div>
+              <div className="chapter-title">第{chapter.id}章: {chapter.title}</div>
+              <div className="chapter-subtitle">{chapter.subtitle}</div>
+              <div className="chapter-quote">「{chapter.quote}」</div>
             </button>
           );
         })}
@@ -903,71 +1728,49 @@ function GKenteiQuizApp() {
   // ============================================
   const renderAnalysis = () => {
     const weakAnalysis = getWeakAnalysis();
-
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 md:p-8">
-        <div className="max-w-2xl mx-auto">
-          <button 
-            onClick={() => setMode('home')}
-            className="text-slate-400 hover:text-white mb-6 flex items-center gap-2"
-          >
-            ← ホームに戻る
-          </button>
-          
-          <h2 className="text-2xl font-bold text-white mb-6 text-center">📊 弱点分析</h2>
-          
-          {weakAnalysis.length === 0 ? (
-            <div className="bg-slate-800/80 rounded-2xl p-8 text-center border border-slate-700">
-              <div className="text-5xl mb-4">🎯</div>
-              <p className="text-slate-300 text-lg mb-2">まだ間違えた問題がありません</p>
-              <p className="text-slate-500 text-sm">問題を解いて弱点を発見しましょう！</p>
+      <div className="quiz-container">
+        <button className="quiz-back-btn" onClick={() => setMode('home')}>← ホームに戻る</button>
+        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>📊 弱点分析</h2>
+        
+        {weakAnalysis.length === 0 ? (
+          <div className="analysis-empty">
+            <div className="analysis-empty-icon">🎯</div>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '1.1rem', marginBottom: '0.5rem' }}>まだ間違えた問題がありません</p>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>問題を解いて弱点を発見しましょう！</p>
+          </div>
+        ) : (
+          <>
+            <div className="progress-panel" style={{ marginBottom: '1.5rem' }}>
+              <p style={{ textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                間違えた問題: <span style={{ color: 'white', fontWeight: 700, fontSize: '1.25rem' }}>{wrongQuestions.length}問</span>
+              </p>
             </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="bg-slate-800/50 rounded-2xl p-4 border border-slate-700 mb-6">
-                <p className="text-center text-slate-400">
-                  間違えた問題: <span className="text-white font-bold text-xl">{wrongQuestions.length}問</span>
-                </p>
-              </div>
-              
-              {weakAnalysis.map(({ chapter, count }) => (
-                <div key={chapter.id} className="bg-slate-800/80 rounded-xl p-4 border border-slate-700">
-                  <div className="flex items-center gap-4">
-                    <div 
-                      className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl"
-                      style={{ backgroundColor: chapter.color + '30' }}
-                    >
-                      {chapter.character}
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-white font-bold">{chapter.title}</div>
-                      <div className="text-slate-500 text-sm">{chapter.subtitle}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-3xl font-bold text-red-400">{count}</div>
-                      <div className="text-slate-500 text-xs">要復習</div>
-                    </div>
+            
+            {weakAnalysis.map(({ chapter, count }) => (
+              <div key={chapter.id} className="analysis-item">
+                <div className="analysis-item-header">
+                  <div className="analysis-item-icon" style={{ backgroundColor: chapter.color + '30' }}>{chapter.character}</div>
+                  <div className="analysis-item-info">
+                    <div className="analysis-item-title">{chapter.title}</div>
+                    <div className="analysis-item-subtitle">{chapter.subtitle}</div>
                   </div>
-                  <div className="mt-3">
-                    <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-red-500 transition-all duration-500"
-                        style={{ width: `${Math.min((count / 20) * 100, 100)}%` }}
-                      />
-                    </div>
+                  <div className="analysis-item-count">
+                    <div className="analysis-count-num">{count}</div>
+                    <div className="analysis-count-label">要復習</div>
                   </div>
                 </div>
-              ))}
-              
-              <button
-                onClick={startReview}
-                className="w-full py-4 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white rounded-2xl font-bold mt-6 transition-all hover:scale-105"
-              >
-                🔄 復習モードを開始
-              </button>
-            </div>
-          )}
-        </div>
+                <div className="analysis-bar">
+                  <div className="analysis-bar-fill" style={{ width: `${Math.min((count / 20) * 100, 100)}%` }} />
+                </div>
+              </div>
+            ))}
+            
+            <button className="primary-btn" style={{ width: '100%', marginTop: '1rem' }} onClick={startReview}>
+              🔄 復習モードを開始
+            </button>
+          </>
+        )}
       </div>
     );
   };
@@ -976,150 +1779,103 @@ function GKenteiQuizApp() {
   // クイズ画面
   // ============================================
   const renderQuiz = () => {
-    // モードに応じて問題セットを選択
     let questions;
-    if (mode === 'random') {
-      questions = randomQuestions;
-    } else if (isReviewMode && mode === 'review') {
-      questions = wrongQuestions;
-    } else {
-      questions = currentChapter?.questions;
-    }
+    if (mode === 'random') questions = randomQuestions;
+    else if (isReviewMode && mode === 'review') questions = wrongQuestions;
+    else questions = currentChapter?.questions;
     
     if (!questions || questions.length === 0) return null;
 
     const currentQuestion = questions[currentQuestionIndex];
     const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
     
-    // チャプター情報の取得（ランダム/復習モードでは問題ごとに異なる可能性あり）
     let chapter;
     if (mode === 'random' || mode === 'review') {
-      chapter = currentQuestion.chapterId 
-        ? Object.values(quizData).find(c => c.id === currentQuestion.chapterId)
-        : currentChapter;
+      chapter = currentQuestion.chapterId ? Object.values(quizData).find(c => c.id === currentQuestion.chapterId) : currentChapter;
     } else {
       chapter = currentChapter;
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 md:p-8">
-        {/* AI質問モーダル */}
+      <div className="quiz-container">
         <AiChatModal
           isOpen={isAiModalOpen}
           onClose={() => setIsAiModalOpen(false)}
           chapter={chapter || currentChapter}
           currentQuestion={currentQuestion}
           apiKey={apiKey}
-          onOpenApiSettings={() => {
-            setIsAiModalOpen(false);
-            setIsApiModalOpen(true);
-          }}
+          onOpenApiSettings={() => { setIsAiModalOpen(false); setIsApiModalOpen(true); }}
         />
+        <ApiKeyModal isOpen={isApiModalOpen} onClose={() => setIsApiModalOpen(false)} apiKey={apiKey} setApiKey={setApiKey} />
 
-        {/* APIキー設定モーダル */}
-        <ApiKeyModal
-          isOpen={isApiModalOpen}
-          onClose={() => setIsApiModalOpen(false)}
-          apiKey={apiKey}
-          setApiKey={setApiKey}
-        />
+        <div className="quiz-progress">
+          <button className="quiz-back-btn" onClick={() => setMode('home')}>✕ 終了</button>
+          <span className="quiz-info">
+            {mode === 'review' ? '復習モード' : mode === 'random' ? 'ランダム出題' : `第${chapter?.id}章`}
+          </span>
+          <span className="quiz-count">{currentQuestionIndex + 1} / {questions.length}</span>
+        </div>
+        <div className="progress-bar" style={{ marginBottom: '1.5rem' }}>
+          <div className="progress-fill" style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--color-primary), #ec4899)' }} />
+        </div>
 
-        {/* ヘッダー */}
-        <div className="max-w-3xl mx-auto mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <button onClick={() => setMode('home')} className="text-slate-400 hover:text-white transition-colors">✕ 終了</button>
-            <span className="text-sm text-slate-400">
-              {mode === 'review' ? '復習モード' : mode === 'random' ? 'ランダム出題' : `第${chapter?.id}章: ${chapter?.title}`}
-            </span>
-            <span className="font-bold">{currentQuestionIndex + 1} / {questions.length}</span>
+        <div className="question-card">
+          <div className="question-header">
+            <div className="character-info">
+              <span className="character-icon">{chapter?.character || '📚'}</span>
+              <div>
+                <div className="character-name" style={{ color: chapter?.color }}>{chapter?.characterName || ''}</div>
+                <div className="character-subtitle">{chapter?.subtitle || ''}</div>
+              </div>
+            </div>
+            <button className={`ai-btn ${!apiKey ? 'disabled' : ''}`} onClick={() => setIsAiModalOpen(true)}>
+              🤖 質問する
+            </button>
           </div>
-          <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-300" style={{ width: `${progress}%` }} />
+
+          <div className="question-text">Q{currentQuestionIndex + 1}. {currentQuestion.question}</div>
+
+          <div className="options-list">
+            {currentQuestion.options.map((option, idx) => {
+              let btnClass = 'option-btn';
+              if (showExplanation) {
+                if (idx === currentQuestion.correct) btnClass += ' correct';
+                else if (idx === selectedAnswer) btnClass += ' incorrect';
+              } else if (idx === selectedAnswer) {
+                btnClass += ' selected';
+              }
+              return (
+                <button key={idx} className={btnClass} onClick={() => selectAnswer(idx)} disabled={showExplanation}>
+                  <span className="option-label">{['A', 'B', 'C', 'D'][idx]}.</span>
+                  {option}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* 問題カード */}
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-slate-800/80 rounded-3xl p-6 md:p-8 border border-slate-700 mb-6">
-            {/* キャラクターとAI質問ボタン */}
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-700">
-              <div className="flex items-center gap-3">
-                <span className="text-4xl">{chapter?.character || currentChapter?.character}</span>
-                <div>
-                  <div className="font-bold" style={{ color: chapter?.color || currentChapter?.color }}>{chapter?.characterName || currentChapter?.characterName}</div>
-                  <div className="text-xs text-slate-400">{chapter?.subtitle || currentChapter?.subtitle}</div>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsAiModalOpen(true)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all hover:scale-105 ${
-                  apiKey 
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400' 
-                    : 'bg-slate-600 hover:bg-slate-500'
-                }`}
-              >
-                🤖 質問する
-              </button>
+        {showExplanation && (
+          <div className="explanation-panel">
+            <div className={`explanation-title ${selectedAnswer === currentQuestion.correct ? 'correct' : 'incorrect'}`}>
+              {selectedAnswer === currentQuestion.correct ? '✓ 正解！' : '✗ 不正解'}
             </div>
-
-            {/* 問題文 */}
-            <div className="text-lg md:text-xl font-medium mb-8 leading-relaxed">
-              Q{currentQuestionIndex + 1}. {currentQuestion.question}
-            </div>
-
-            {/* 選択肢 */}
-            <div className="space-y-3">
-              {currentQuestion.options.map((option, idx) => {
-                let buttonClass = 'bg-slate-700/50 hover:bg-slate-600/50 border-slate-600';
-                if (showExplanation) {
-                  if (idx === currentQuestion.correct) {
-                    buttonClass = 'bg-green-500/20 border-green-500 text-green-300';
-                  } else if (idx === selectedAnswer && idx !== currentQuestion.correct) {
-                    buttonClass = 'bg-red-500/20 border-red-500 text-red-300';
-                  }
-                } else if (idx === selectedAnswer) {
-                  buttonClass = 'bg-purple-500/30 border-purple-500';
-                }
-                return (
-                  <button key={idx} onClick={() => selectAnswer(idx)} disabled={showExplanation}
-                    className={`w-full p-4 rounded-xl text-left border-2 transition-all ${buttonClass}`}>
-                    <span className="font-bold mr-3 text-slate-400">{['A', 'B', 'C', 'D'][idx]}.</span>
-                    {option}
-                  </button>
-                );
-              })}
+            <p className="explanation-text">{currentQuestion.explanation}</p>
+            <div className="keywords">
+              {currentQuestion.keywords.map((kw, idx) => (
+                <span key={idx} className="keyword">#{kw}</span>
+              ))}
             </div>
           </div>
+        )}
 
-          {/* 解説 */}
-          {showExplanation && (
-            <div className="bg-slate-800/80 rounded-3xl p-6 border border-slate-700 mb-6">
-              <div className={`font-bold text-lg mb-3 ${selectedAnswer === currentQuestion.correct ? 'text-green-400' : 'text-red-400'}`}>
-                {selectedAnswer === currentQuestion.correct ? '✓ 正解！' : '✗ 不正解'}
-              </div>
-              <p className="text-slate-300 leading-relaxed mb-4">{currentQuestion.explanation}</p>
-              <div className="flex flex-wrap gap-2">
-                {currentQuestion.keywords.map((kw, idx) => (
-                  <span key={idx} className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded-full">#{kw}</span>
-                ))}
-              </div>
-            </div>
+        <div className="action-btns">
+          {!showExplanation ? (
+            <button className="primary-btn" onClick={confirmAnswer} disabled={selectedAnswer === null}>回答する</button>
+          ) : (
+            <button className="primary-btn success" onClick={nextQuestion}>
+              {currentQuestionIndex < questions.length - 1 ? '次の問題 →' : '結果を見る'}
+            </button>
           )}
-
-          {/* ボタン */}
-          <div className="flex justify-center gap-4">
-            {!showExplanation ? (
-              <button onClick={confirmAnswer} disabled={selectedAnswer === null}
-                className={`px-8 py-4 rounded-2xl font-bold text-lg transition-all ${selectedAnswer !== null ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 hover:scale-105' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}>
-                回答する
-              </button>
-            ) : (
-              <button onClick={nextQuestion}
-                className="px-8 py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 hover:scale-105 transition-all">
-                {currentQuestionIndex < questions.length - 1 ? '次の問題 →' : '結果を見る'}
-              </button>
-            )}
-          </div>
         </div>
       </div>
     );
@@ -1137,42 +1893,32 @@ function GKenteiQuizApp() {
     else if (score >= 80) { message = '合格ラインクリア！この調子で！'; emoji = '🎉'; }
     else if (score >= 70) { message = 'もう少し！復習で弱点克服を！'; emoji = '💪'; }
     else { message = '基礎固めが必要です。復習しましょう！'; emoji = '📚'; }
+    const scoreClass = score >= 80 ? 'high' : score >= 60 ? 'mid' : 'low';
 
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4 md:p-8 flex items-center justify-center">
-        <div className="max-w-lg w-full">
-          <div className="bg-slate-800/80 rounded-3xl p-8 border border-slate-700 text-center">
-            <div className="text-6xl mb-4">{emoji}</div>
-            <h2 className="text-2xl font-bold mb-2">
-              {mode === 'review' ? '復習完了！' : mode === 'random' ? 'ランダム出題完了！' : `第${currentChapter?.id}章 完了！`}
-            </h2>
-            <div className="my-8">
-              <div className={`text-7xl font-black ${score >= 80 ? 'text-green-400' : score >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>{score}%</div>
-              <div className="text-slate-400 mt-2">{correctCount} / {totalCount} 問正解</div>
-            </div>
-            <p className="text-slate-300 mb-8">{message}</p>
-            <div className="space-y-3">
-              <button onClick={() => setMode('home')} className="w-full py-4 rounded-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 transition-all">
-                ホームに戻る
-              </button>
-              {mode === 'quiz' && (
-                <button onClick={() => startChapter(currentChapter.id)} className="w-full py-4 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 transition-all">
-                  もう一度挑戦
-                </button>
-              )}
-              {wrongQuestions.length > 0 && mode !== 'review' && (
-                <button onClick={() => setMode('analysis')} className="w-full py-4 rounded-xl font-bold bg-slate-700 hover:bg-slate-600 transition-all">
-                  📊 弱点分析を見る
-                </button>
-              )}
-            </div>
+      <div className="quiz-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+        <div className="result-card">
+          <div className="result-emoji">{emoji}</div>
+          <h2 className="result-title">
+            {mode === 'review' ? '復習完了！' : mode === 'random' ? 'ランダム出題完了！' : `第${currentChapter?.id}章 完了！`}
+          </h2>
+          <div className={`result-score ${scoreClass}`}>{score}%</div>
+          <div className="result-detail">{correctCount} / {totalCount} 問正解</div>
+          <p className="result-message">{message}</p>
+          <div className="result-btns">
+            <button className="result-btn primary" onClick={() => setMode('home')}>ホームに戻る</button>
+            {mode === 'quiz' && (
+              <button className="result-btn secondary" onClick={() => startChapter(currentChapter.id)}>もう一度挑戦</button>
+            )}
+            {wrongQuestions.length > 0 && mode !== 'review' && (
+              <button className="result-btn secondary" onClick={() => setMode('analysis')}>📊 弱点分析を見る</button>
+            )}
           </div>
         </div>
       </div>
     );
   };
 
-  // 画面切り替え
   switch (mode) {
     case 'home': return renderHome();
     case 'chapter': return renderChapterSelect();
@@ -1184,15 +1930,39 @@ function GKenteiQuizApp() {
     default: return renderHome();
   }
 }
+
+
+// ============================================
+// エクスポート
+// ============================================
 export default class QuizOnlyView {
+  constructor() {
+    this.root = null;
+  }
+
   render() {
     const container = document.createElement('div');
-    container.style.width = '100%';
-    container.style.height = '100%';
+    container.id = 'quiz-only-container';
 
-    const root = createRoot(container);
-    root.render(<GKenteiQuizApp />);
+    // スタイルを注入
+    const styleEl = document.createElement('style');
+    styleEl.textContent = styles;
+    container.appendChild(styleEl);
+
+    // Reactアプリをマウント
+    const appContainer = document.createElement('div');
+    container.appendChild(appContainer);
+    
+    this.root = createRoot(appContainer);
+    this.root.render(<GKenteiQuizApp />);
 
     return container;
+  }
+
+  destroy() {
+    if (this.root) {
+      this.root.unmount();
+      this.root = null;
+    }
   }
 }
