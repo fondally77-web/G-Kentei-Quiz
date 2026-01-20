@@ -66,10 +66,21 @@ export class GameState {
      * @param {Object} partialState 
      */
     update(partialState) {
-        this.state = this.deepMerge(this.state, partialState);
-        this.notify();
+    // ビューが変わるかどうかを事前にチェック
+    const viewChanging = partialState.currentView && partialState.currentView !== this.state.currentView;
+    const chapterChanging = partialState.currentChapter !== undefined && partialState.currentChapter !== this.state.currentChapter;
 
-        // 自動セーブ
+    this.state = this.deepMerge(this.state, partialState);
+    this.notify();
+
+    // ★ ビューまたは章が変わったらスクロールをリセット
+    if (viewChanging || chapterChanging) {
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+    }
+
+    // 自動セーブ
         if (this.state.settings.autoSave) {
             this.saveToStorage();
         }
