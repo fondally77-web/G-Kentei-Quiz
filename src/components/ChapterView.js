@@ -107,13 +107,13 @@ export class ChapterView {
             top: 50px;
             left: 50%;
             transform: translateX(-50%);
-            height: 50%;
+            height: 40%;
             width: 40%;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             pointer-events: none;
-            z-index: 5;
+            z-index: 4;
         `;
         charArea.innerHTML = `
             <div id="character-display" style="
