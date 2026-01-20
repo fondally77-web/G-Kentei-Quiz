@@ -104,7 +104,7 @@ export class ChapterView {
         charArea.id = 'character-area';
         charArea.style.cssText = `
             position: absolute;
-            top: 100px;
+            top: 50px;
             left: 50%;
             transform: translateX(-50%);
             height: 50%;
