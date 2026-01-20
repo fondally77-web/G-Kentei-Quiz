@@ -30,13 +30,13 @@ export class DialogueBox {
     this.element.className = 'dialogue-box';
     this.element.style.cssText = `
             position: absolute;
-            bottom: 0;
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
             max-width: 850px;
-            min-height: 160px;
-            max-height: 35%;
+            min-height: 140px;
+            max-height: 30%;
             background: linear-gradient(180deg, rgba(25, 25, 35, 0.97), rgba(15, 15, 25, 0.99));
             border: 2px solid var(--color-primary);
             border-radius: var(--border-radius-lg);
@@ -163,6 +163,8 @@ export class DialogueBox {
    */
   updateContent(name, text, emotion = '', emoji = '') {
     if (!this.element) return;
+    
+    this.element.scrollTop = 0;
 
     const nameEl = this.element.querySelector('#char-name');
     const textEl = this.element.querySelector('#dialogue-text');
@@ -295,10 +297,40 @@ export class DialogueBox {
                     0%, 100% { transform: translateY(0); }
                     50% { transform: translateY(4px); }
                 }
+                
+                /* スマホ用スタイル */
+                @media (max-width: 768px) {
+                    .dialogue-box {
+                        width: 95% !important;
+                        min-height: 120px !important;
+                        max-height: 40% !important;
+                        padding: 1rem !important;
+                        bottom: 5px !important;
+                    }
+                    
+                    .dialogue-box #char-icon-container {
+                        width: 40px !important;
+                        height: 40px !important;
+                    }
+                    
+                    .dialogue-box #char-name {
+                        font-size: 1rem !important;
+                    }
+                    
+                    .dialogue-box #dialogue-text {
+                        font-size: 0.95rem !important;
+                        line-height: 1.6 !important;
+                        min-height: 60px !important;
+                    }
+                    
+                    .dialogue-box #continue-indicator {
+                        font-size: 0.75rem !important;
+                    }
+                }
             `;
-      document.head.appendChild(style);
+            document.head.appendChild(style);
+        }
     }
-  }
 
   show() {
     if (this.element) {
