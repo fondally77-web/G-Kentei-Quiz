@@ -4,8 +4,8 @@ import { Router } from './core/router.js'
 import { TitleScreen } from './components/TitleScreen.js'
 import { ChapterSelectView } from './components/ChapterSelectView.js'
 import { ChapterView, Chapter2View, Chapter3View, Chapter4View, Chapter5View, Chapter6View, Chapter7View, Chapter8View, Chapter9View } from './components/ChapterView.js'
-import { QuizOnlyView } from './components/QuizOnlyView.js'
-import { GExamView } from './components/GExamView.js'
+import { QuizOnlyView } from './components/QuizOnlyView.jsx'
+import { GExamView } from './components/GExamView.jsx'
 
 // 第1章は専用実装（ミニゲーム付き）
 import { Chapter1View } from './chapters/chapter1/index.js'
