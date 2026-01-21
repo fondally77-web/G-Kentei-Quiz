@@ -5,55 +5,55 @@
 
 // キャラクター画像のインポート
 // 主要キャラクター
-import aiImage from '../assets/images/characters/AI.jpg';
-import mlImage from '../assets/images/characters/ML.jpg';
-import dlImage from '../assets/images/characters/DL.jpg';
+import aiImage from '../assets/images/characters/AI.webp';
+import mlImage from '../assets/images/characters/ML.webp';
+import dlImage from '../assets/images/characters/DL.webp';
 
 // 学習の三兄弟（第2章）
-import supervisedImage from '../assets/images/characters/教師あり学習.jpg';
-import unsupervisedImage from '../assets/images/characters/教師なし学習.jpg';
-import reinforcementImage from '../assets/images/characters/強化学習.jpg';
+import supervisedImage from '../assets/images/characters/教師あり学習.webp';
+import unsupervisedImage from '../assets/images/characters/教師なし学習.webp';
+import reinforcementImage from '../assets/images/characters/強化学習.webp';
 
 // ニューラルネットワーク要素（第3章）
-import neuronImage from '../assets/images/characters/ニューロン.jpg';
-import activationImage from '../assets/images/characters/活性化関数.jpg';
-import lossImage from '../assets/images/characters/誤差関数.jpg';
-import backpropImage from '../assets/images/characters/誤差逆伝播法.jpg';
-import optimizerImage from '../assets/images/characters/最適化手法.jpg';
-import regularizationImage from '../assets/images/characters/正則化.jpg';
+import neuronImage from '../assets/images/characters/ニューロン.webp';
+import activationImage from '../assets/images/characters/活性化関数.webp';
+import lossImage from '../assets/images/characters/誤差関数.webp';
+import backpropImage from '../assets/images/characters/誤差逆伝播法.webp';
+import optimizerImage from '../assets/images/characters/最適化手法.webp';
+import regularizationImage from '../assets/images/characters/正則化.webp';
 
 // アーキテクチャ（第4-5章）
-import cnnImage from '../assets/images/characters/CNN.jpg';
-import rnnImage from '../assets/images/characters/RNN.jpg';
-import transformerImage from '../assets/images/characters/TRANSFORMER.jpg';
-import ganImage from '../assets/images/characters/GAN.jpg';
-import diffusionImage from '../assets/images/characters/DIFFUSION.jpg';
-import nerfImage from '../assets/images/characters/NeRF.jpg';
+import cnnImage from '../assets/images/characters/CNN.webp';
+import rnnImage from '../assets/images/characters/RNN.webp';
+import transformerImage from '../assets/images/characters/TRANSFORMER.webp';
+import ganImage from '../assets/images/characters/GAN.webp';
+import diffusionImage from '../assets/images/characters/DIFFUSION.webp';
+import nerfImage from '../assets/images/characters/NeRF.webp';
 
 // データ/プロジェクト（第6章）
-import dataScientistImage from '../assets/images/characters/Data Scientist.jpg';
-import crispDmImage from '../assets/images/characters/CRISP-DM.jpg';
-import mlopsImage from '../assets/images/characters/MLOps.jpg';
-import dataLeakageImage from '../assets/images/characters/Data Leakage.jpg';
-import metricsImage from '../assets/images/characters/メトリクス.jpg';
+import dataScientistImage from '../assets/images/characters/Data Scientist.webp';
+import crispDmImage from '../assets/images/characters/CRISP-DM.webp';
+import mlopsImage from '../assets/images/characters/MLOps.webp';
+import dataLeakageImage from '../assets/images/characters/Data Leakage.webp';
+import metricsImage from '../assets/images/characters/メトリクス.webp';
 
 // 数理・統計（第7章）
-import statsImage from '../assets/images/characters/スタッツ.jpg';
-import probabilityImage from '../assets/images/characters/プロバビリタス.jpg';
-import correlationImage from '../assets/images/characters/コレラティオ.jpg';
+import statsImage from '../assets/images/characters/スタッツ.webp';
+import probabilityImage from '../assets/images/characters/プロバビリタス.webp';
+import correlationImage from '../assets/images/characters/コレラティオ.webp';
 
 // 法律（第8章）
-import confidentialityImage from '../assets/images/characters/守秘の聖騎士.jpg';
-import contractImage from '../assets/images/characters/約束の封印師.jpg';
-import fairTradeImage from '../assets/images/characters/公正の裁定者.jpg';
-import copyrightImage from '../assets/images/characters/創造の三女神.jpg';
+import confidentialityImage from '../assets/images/characters/守秘の聖騎士.webp';
+import contractImage from '../assets/images/characters/約束の封印師.webp';
+import fairTradeImage from '../assets/images/characters/公正の裁定者.webp';
+import copyrightImage from '../assets/images/characters/創造の三女神.webp';
 
 // 倫理（第9章）
-import ethicsImage from '../assets/images/characters/エシカ.jpg';
-import fairnessImage from '../assets/images/characters/フェアネス.jpg';
-import securityImage from '../assets/images/characters/セキュリタス.jpg';
-import transparencyImage from '../assets/images/characters/ルーチェ.jpg';
-import governanceImage from '../assets/images/characters/ガヴァナー.jpg';
+import ethicsImage from '../assets/images/characters/エシカ.webp';
+import fairnessImage from '../assets/images/characters/フェアネス.webp';
+import securityImage from '../assets/images/characters/セキュリタス.webp';
+import transparencyImage from '../assets/images/characters/ルーチェ.webp';
+import governanceImage from '../assets/images/characters/ガヴァナー.webp';
 
 /**
  * キャラクター定義
@@ -638,4 +638,34 @@ export function getChapterCharacters(chapterId) {
 
     const ids = chapterCharacterIds[chapterId] || [];
     return ids.map(id => getCharacterById(id)).filter(c => c !== null);
+}
+
+/**
+ * 章のキャラクター画像をプリロードする
+ * @param {number} chapterId 
+ * @returns {Promise<void>}
+ */
+export async function preloadChapterImages(chapterId) {
+    const characters = getChapterCharacters(chapterId);
+    if (characters.length === 0) return Promise.resolve();
+
+    console.log(`第${chapterId}章のキャラクター画像プリロード開始: ${characters.length}体`);
+
+    const promises = characters.map(char => {
+        if (!char.image) return Promise.resolve();
+
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(char.name);
+            img.onerror = () => {
+                console.warn(`画像読み込み失敗: ${char.name}`);
+                resolve(char.name); // エラーでも止まらない
+            };
+            img.src = char.image;
+        });
+    });
+
+    return Promise.all(promises).then(() => {
+        console.log(`第${chapterId}章のキャラクター画像プリロード完了`);
+    });
 }

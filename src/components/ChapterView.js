@@ -9,7 +9,7 @@ import { ConceptDiagram } from './ConceptDiagram.js';
 import { gameState } from '../core/state.js';
 import { getChapterConfig } from '../data/models/chapter.js';
 import { getScenarioByChapter, getQuizByChapter } from '../assets/data/index.js';
-import { getCharacterDisplay } from '../data/characters.js';
+import { getCharacterDisplay, preloadChapterImages } from '../data/characters.js';
 
 
 export class ChapterView {
@@ -104,7 +104,7 @@ export class ChapterView {
         charArea.id = 'character-area';
         charArea.style.cssText = `
             position: absolute;
-            top: 50px;
+            top: 70px;
             left: 50%;
             transform: translateX(-50%);
             height: 50%;
@@ -161,16 +161,23 @@ export class ChapterView {
         this.autoLoadScenario();
 
         this.addResponsiveStyles();
-        
+
         return this.element;
     }
 
     /**
      * シナリオを自動ロード
      */
-    autoLoadScenario() {
+    async autoLoadScenario() {
         const scenario = getScenarioByChapter(this.chapterId);
         if (scenario && scenario.length > 0) {
+            // シナリオ開始前に画像をプリロード
+            try {
+                await preloadChapterImages(this.chapterId);
+            } catch (e) {
+                console.warn('画像プリロードに失敗しましたが続行します', e);
+            }
+
             this.loadScript(scenario);
             console.log(`第${this.chapterId}章シナリオをロード: ${scenario.length}セリフ`);
         } else {
@@ -718,7 +725,7 @@ export class ChapterView {
             style.textContent = `
                 @media (max-width: 768px) {
                     .character-area {
-                        top: 60px !important;
+                        top: 90px !important;
                         height: 35% !important;
                         width: 60% !important;
                     }
