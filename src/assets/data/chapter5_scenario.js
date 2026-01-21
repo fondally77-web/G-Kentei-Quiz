@@ -74,7 +74,7 @@ export const chapter5Scenario = [
     // ===== 生成モデル =====
     {
         character: "生成AI",
-        text: "私は『生成AI』。新しいデータを作り出すクリエイターです。",
+        text: "私は『生成AI』。Generator（生成者）が偶物を作り、Discriminator（審判者）が見分ける。この競争が、互いを高め合うんだ。",
         visual: "generative_ai_appear"
     },
     {
@@ -89,7 +89,7 @@ export const chapter5Scenario = [
     },
     {
         character: "生成AI",
-        text: "画像生成、音楽生成、テキスト生成...創造的なタスクでも人間を驚かせています。",
+        text: "俺たちは2人で1つ。競争が、創造を生む。画像生成、音楽生成、テキスト生成...創造的なタスクでも人間を驚かせている。",
         visual: "generative_ai_proud"
     },
     // ➡️ 概念図：GANの仕組み
@@ -180,7 +180,7 @@ export const chapter5Scenario = [
     // ===== エピローグ =====
     {
         character: "AI (人工知能)",
-        text: "画像、言語、音声、ゲーム...DLは本当に様々な分野で活躍しているんだな。",
+        text: "画像、言語、音声、ゲーム...DLは本当に様々な分野で活躍しているのね。",
         visual: "ai_amazed"
     },
     {

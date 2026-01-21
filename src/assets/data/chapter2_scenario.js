@@ -16,34 +16,34 @@ export const chapter2Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "3人の弟子...？どんな力を持っているんだ？",
+        text: "3人の弟子...？どんな力を持っているのかしら？",
         visual: "ai_curious"
     },
     {
         character: "ML (機械学習)",
-        text: "それぞれ学び方が違う。まずは長女の『教師あり学習』から紹介しよう。",
+        text: "それぞれ学び方が違う。まずは長男の『教師あり学習』から紹介しよう。",
         visual: "ml_guide"
     },
 
     // ===== 教師あり学習の紹介 =====
     {
         character: "教師あり学習",
-        text: "はじめまして！私は『教師あり学習（Supervised Learning）』。正解を教えてもらいながら学ぶのが得意よ！",
+        text: "はじめまして。俺は『教師あり学習（Supervised Learning）』。正解を教えてもらいながら学ぶのが得意だ。",
         visual: "supervised_appear"
     },
     {
         character: "AI (人工知能)",
-        text: "正解を教えてもらう...？具体的にはどういうことだ？",
+        text: "正解を教えてもらう...？具体的にはどういうことなの？",
         visual: "ai_question"
     },
     {
         character: "教師あり学習",
-        text: "例えばね、猫の画像を見せて『これは猫だよ』って教えてもらうの。犬の画像なら『これは犬だよ』ってね。",
+        text: "例えば、猫の画像を見せて『これは猫だ』と教えてもらう。犬の画像なら『これは犬だ』というふうにな。",
         visual: "supervised_explain"
     },
     {
         character: "教師あり学習",
-        text: "そうやって正解ラベル付きのデータをたくさん見て学習するから、新しい画像も分類できるようになるのよ！",
+        text: "そうやって正解ラベル付きのデータをたくさん見て学習するから、新しい画像も分類できるようになるんだ。",
         visual: "supervised_explain"
     },
 
@@ -51,40 +51,40 @@ export const chapter2Scenario = [
     {
         type: 'inline_quiz',
         character: "教師あり学習",
-        question: "じゃあ、ちょっと確認ね！私が得意なのは次のうちどっちかしら？",
+        question: "じゃあ、ちょっと確認だ。俺が得意なのは次のうちどっちだ？",
         options: [
             { text: "正解ラベル付きのデータから学ぶ", correct: true },
             { text: "正解なしで自分でパターンを見つける", correct: false }
         ],
         onCorrect: {
             character: "教師あり学習",
-            text: "正解！さすがね✨ 私は『先生』のように正解を教えてもらって学ぶから『教師あり』なのよ！"
+            text: "正解！その通りだ。俺は『先生』のように正解を教えてもらって学ぶから『教師あり』なんだ。"
         },
         onIncorrect: {
             character: "教師あり学習",
-            text: "惜しい！それは次に紹介する弟の得意分野ね。私は正解ラベル付きのデータから学ぶから『教師あり』なのよ。"
+            text: "惜しい！それは次に紹介する弟の得意分野だな。俺は正解ラベル付きのデータから学ぶから『教師あり』なんだ。"
         }
     },
 
     // ===== 教師あり学習の仕事 =====
     {
         character: "教師あり学習",
-        text: "私には2つの主な仕事があるの。『分類』と『回帰』よ。",
+        text: "正解がないと不安なんだ...でも、それが俺の強さでもある。俺には2つの主な仕事がある。『分類』と『回帰』だ。",
         visual: "supervised_pose"
     },
     {
         character: "AI (人工知能)",
-        text: "分類と回帰...？どう違うんだ？",
+        text: "分類と回帰...？どう違うのかしら？",
         visual: "ai_question"
     },
     {
         character: "教師あり学習",
-        text: "『分類』は、データをカテゴリに分けること。例えば、メールが『スパム』か『普通』かを判定するとかね。",
+        text: "『分類』は、データをカテゴリに分けることだ。例えば、メールが『スパム』か『普通』かを判定するとかな。",
         visual: "supervised_explain"
     },
     {
         character: "教師あり学習",
-        text: "『回帰』は、連続的な数値を予測すること。例えば、この家は『いくら』で売れるかを予測するの。",
+        text: "『回帰』は、連続的な数値を予測することだ。例えば、この家は『いくら』で売れるかを予測する。",
         visual: "supervised_explain"
     },
 
@@ -92,18 +92,18 @@ export const chapter2Scenario = [
     {
         type: 'inline_quiz',
         character: "教師あり学習",
-        question: "じゃあ問題！『明日の気温が何度になるか予測する』のは、分類と回帰どっち？",
+        question: "じゃあ問題だ！『明日の気温が何度になるか予測する』のは、分類と回帰どっちだ？",
         options: [
             { text: "分類", correct: false },
             { text: "回帰", correct: true }
         ],
         onCorrect: {
             character: "教師あり学習",
-            text: "大正解！気温は連続的な数値だから『回帰』ね。よく分かってるじゃない！"
+            text: "大正解！気温は連続的な数値だから『回帰』だな。よく分かってる。"
         },
         onIncorrect: {
             character: "教師あり学習",
-            text: "残念！気温は『25度』『26度』みたいに連続的な数値だから『回帰』よ。分類は『晴れ/曇り/雨』みたいなカテゴリ分けね。"
+            text: "残念！気温は『25度』『26度』みたいに連続的な数値だから『回帰』だ。分類は『晴れ/曇り/雨』みたいなカテゴリ分けだな。"
         }
     },
 
@@ -115,12 +115,12 @@ export const chapter2Scenario = [
     },
     {
         character: "教師なし学習",
-        text: "俺は『教師なし学習（Unsupervised Learning）』。正解なんて教えてもらわなくても、自分でパターンを見つけられるぜ。",
+        text: "正解？ そんなの、自分で見つけるさ！ 俺は『教師なし学習（Unsupervised Learning）』。データから自由にパターンを見つけられるぜ。",
         visual: "unsupervised_appear"
     },
     {
         character: "AI (人工知能)",
-        text: "正解がないのに、どうやって学ぶんだ？",
+        text: "正解がないのに、どうやって学ぶのかしら？",
         visual: "ai_question"
     },
     {
@@ -161,12 +161,12 @@ export const chapter2Scenario = [
     },
     {
         character: "強化学習",
-        text: "オレが『強化学習（Reinforcement Learning）』だ！試行錯誤を繰り返して、最高の行動を見つけ出す！",
+        text: "オレが『強化学習（Reinforcement Learning）』だ！失敗は報酬への道標。何度でも挑戦する！",
         visual: "reinforcement_appear"
     },
     {
         character: "AI (人工知能)",
-        text: "試行錯誤...？ゲームのプレイヤーみたいだな。",
+        text: "試行錯誤...？ゲームのプレイヤーみたいね。",
         visual: "ai_interested"
     },
     {
@@ -218,12 +218,12 @@ export const chapter2Scenario = [
     },
     {
         character: "教師あり学習",
-        text: "例えるなら、テストの過去問を丸暗記したけど、応用問題が全然解けない...みたいな状態ね。",
+        text: "例えるなら、テストの過去問を丸暗記したけど、応用問題が全然解けない...みたいな状態だな。",
         visual: "supervised_explain"
     },
     {
         character: "AI (人工知能)",
-        text: "なるほど...訓練データは完璧に覚えたけど、本当の実力がついていない状態か。",
+        text: "なるほど...訓練データは完璧に覚えたけど、本当の実力がついていない状態なのね。",
         visual: "ai_understand"
     },
 
@@ -260,7 +260,7 @@ export const chapter2Scenario = [
     },
     {
         character: "教師あり学習",
-        text: "『バイアス』はモデルが単純すぎて真の関係を捉えられない誤差。シンプルすぎる問題ね。",
+        text: "『バイアス』はモデルが単純すぎて真の関係を捕らえられない誤差。シンプルすぎる問題だな。",
         visual: "supervised_explain"
     },
     {
@@ -283,7 +283,7 @@ export const chapter2Scenario = [
     // ===== エピローグ =====
     {
         character: "AI (人工知能)",
-        text: "なるほど...機械学習には3つの主な手法があり、それぞれ学び方が違うんだな。",
+        text: "なるほど...機械学習には3つの主な手法があって、それぞれ学び方が違うのね。",
         visual: "ai_understand"
     },
     {
@@ -293,7 +293,7 @@ export const chapter2Scenario = [
     },
     {
         character: "教師あり学習",
-        text: "私たち3兄弟は、それぞれ得意分野が違うけど、協力すれば様々な問題を解決できるわ！",
+        text: "俺たち3兄弟は、それぞれ得意分野が違うけど、協力すれば様々な問題を解決できるぜ！",
         visual: "supervised_smile"
     },
     {

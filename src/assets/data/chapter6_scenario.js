@@ -85,7 +85,7 @@ export const chapter6Scenario = [
     // ===== データ前処理 =====
     {
         character: "データサイエンティスト",
-        text: "私は『データサイエンティスト』。データを分析し、モデル構築を担当します。",
+        text: "私は『データサイエンティスト』。データを金に変える錬金術を見せよう。",
         visual: "ds_appear"
     },
     {
@@ -121,7 +121,7 @@ export const chapter6Scenario = [
     // ===== データパイプライン =====
     {
         character: "MLOpsエンジニア",
-        text: "私は『MLOpsエンジニア』。機械学習の運用基盤を構築します。",
+        text: "私は『MLOpsエンジニア』。モデルを作るだけでは終わりではない。実世界で『動かし続ける』ことこそ、真の戦いだ。",
         visual: "mlops_appear"
     },
     {
@@ -138,7 +138,7 @@ export const chapter6Scenario = [
     // ===== エピローグ =====
     {
         character: "AI (人工知能)",
-        text: "なるほど...AIを実用化するには、技術だけでなく、データの品質やプロジェクト管理も重要なんだな。",
+        text: "なるほど...AIを実用化するには、技術だけでなく、データの品質やプロジェクト管理も重要なのね。",
         visual: "ai_understand"
     },
     {

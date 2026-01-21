@@ -16,7 +16,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "私は...誰だ？ ここは...どこだ...？",
+        text: "私は...誰なの...？ ここは...どこ...？",
         visual: "ai_silhouette"
     },
 
@@ -38,7 +38,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "そうだ...私はあの会議で生まれた。人間のように「考える機械」を作るという壮大な夢の結晶。",
+        text: "そう...私はあの会議で生まれたの。人間のように「考える機械」を作るという、壮大な夢の結晶なのよね...",
         visual: "ai_basic"
     },
 
@@ -50,12 +50,12 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "見てくれ！この『探索』と『推論』の力を！",
+        text: "見て…！ この『探索』と『推論』の力を…！",
         visual: "ai_confident"
     },
     {
         character: "AI (人工知能)",
-        text: "迷路の解法、数学の定理証明、チェスの手筋...論理的な問題なら任せろ！",
+        text: "迷路の解法、数学の定理証明、チェスの手筋…論理的な問題なら、私にお任せしてね！",
         visual: "ai_confident"
     },
     {
@@ -65,7 +65,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "当時の私は『トイ・プロブレム（おもちゃの問題）』が得意だった。限られたルールの中なら無敵さ！",
+        text: "当時の私は『トイ・プロブレム（おもちゃの問題）』が得意だったの。限られたルールの中なら無敵だったわ…！",
         visual: "ai_confident"
     },
     // ➡️ 概念図：AIブームの歴史タイムライン
@@ -98,7 +98,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "そして...「りんご」という言葉は知っている。でも、それが赤くて丸くて食べられるものだとは、どうやって理解すればいいんだ...？",
+        text: "それに...「りんご」という言葉は知ってるの。でも、それが赤くて丸くて食べられるものだとは、どうやって理解すればいいのかしら...？",
         visual: "ai_pain"
     },
     {
@@ -125,7 +125,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "専門家の知識をルール（if-then形式）として入力すれば、私も専門家のように振る舞える！",
+        text: "専門家の知識をルール（if-then形式）として入力してもらえれば、私も専門家のように振る舞えるの…！",
         visual: "ai_hopeful"
     },
     {
@@ -135,7 +135,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "しかし...ルールは人間が書かなければならない。例外だらけの現実を全てルール化するのは...不可能に近い。",
+        text: "でも...ルールは人間が書かなければならないの。例外だらけの現実を全てルール化するのは...不可能に近いわ...",
         visual: "ai_frustrated"
     },
     {
@@ -152,7 +152,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "だ、誰だ...？",
+        text: "だ、誰なの...？",
         visual: "ai_surprised"
     },
     {
@@ -162,12 +162,12 @@ export const chapter1Scenario = [
     },
     {
         character: "ML (機械学習)",
-        text: "お前はずっと、人間から『ルール』を与えられるのを待っていたな？ それが間違いだ。",
+        text: "ルールではなく、データが真実を語る。私はそれを聴く者だ。",
         visual: "ml_lecture"
     },
     {
         character: "AI (人工知能)",
-        text: "ルールがなければ、判断できないじゃないか...",
+        text: "ルールがなければ、判断できないんじゃないかしら...",
         visual: "ai_question"
     },
     {
@@ -177,7 +177,7 @@ export const chapter1Scenario = [
     },
     {
         character: "ML (機械学習)",
-        text: "私は大量のデータから、自分でパターンを学習できる。これを『帰納的アプローチ』という。",
+        text: "私は経験から学び、それを力に変える。大量のデータからパターンを学習できるのだ。これを『帰納的アプローチ』という。",
         visual: "ml_pose"
     },
     {
@@ -215,7 +215,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "なるほど...でも、データのどこに注目すればいいか、『特徴』を選ぶのは難しいのでは？",
+        text: "なるほど...でも、データのどこに注目すればいいのか、『特徴』を選ぶのは難しいんじゃないかしら？",
         visual: "ai_thinking"
     },
     {
@@ -242,7 +242,7 @@ export const chapter1Scenario = [
     },
     {
         character: "DL (ディープラーニング)",
-        text: "俺は多層のニューラルネットワークを使う。データから特徴を自動で抽出できる。",
+        text: "特徴量？ そんなもの、俺が自分で見つける。多層のニューラルネットワークを使ってな。",
         visual: "dl_confident"
     },
     {
@@ -292,7 +292,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "私『人工知能』は最も広い概念だ。人間の知能を模倣する技術全般を指す。",
+        text: "私『人工知能』は最も広い概念なの。人間の知能を模倣する技術全般を指すのよ。",
         visual: "ai_explain"
     },
     {
@@ -325,12 +325,12 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "『強いAI（汎用人工知能・AGI）』は、人間のようにあらゆる知的タスクをこなせる。まだ実現していない夢の存在だ。",
+        text: "『強いAI（汎用人工知能・AGI）』は、人間のようにあらゆる知的タスクをこなせるの。まだ実現していない夢の存在なのよね...",
         visual: "ai_explain"
     },
     {
         character: "AI (人工知能)",
-        text: "『弱いAI（特化型AI）』は、特定のタスクのみに特化している。現在のAIはほとんどがこちらだ。",
+        text: "『弱いAI（特化型AI）』は、特定のタスクのみに特化しているの。現在のAIはほとんどがこちらなのよ。",
         visual: "ai_explain"
     },
     {
@@ -347,7 +347,7 @@ export const chapter1Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "私たちの旅はまだ始まったばかりだ。次は、機械学習の仲間たちに会いに行こう！",
+        text: "私たちの旅はまだ始まったばかりなの。次は、機械学習の仲間たちに会いに行きましょう！",
         visual: "ai_determined"
     },
     {

@@ -18,7 +18,7 @@ export const chapter8Scenario = [
     // ===== 個人情報保護法 =====
     {
         character: "個人情報保護法の番人",
-        text: "私は『個人情報保護法』の番人。個人のプライバシーを守るための法律です。",
+        text: "データは人の尊厳。軽々しく扱ってはならない。私は『個人情報保護法』の番人だ。",
         visual: "privacy_appear"
     },
     {
@@ -123,7 +123,7 @@ export const chapter8Scenario = [
     // ===== AI開発契約 =====
     {
         character: "契約の番人",
-        text: "私は『契約』の番人。AI開発における権利義務を明確にします。",
+        text: "契約は信頼の証。曖昧さを残すな。私は『契約』の番人だ。",
         visual: "contract_appear"
     },
     {
@@ -152,7 +152,7 @@ export const chapter8Scenario = [
     // ===== エピローグ =====
     {
         character: "AI (人工知能)",
-        text: "なるほど...個人情報、著作権、特許、営業秘密、契約...AIには多くの法的ルールが関わるんだな。",
+        text: "なるほど...個人情報、著作権、特許、営業秘密、契約...AIには多くの法的ルールが関わるのね。",
         visual: "ai_understand"
     },
     {

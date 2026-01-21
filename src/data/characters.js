@@ -5,14 +5,14 @@
 
 // キャラクター画像のインポート
 // 主要キャラクター
-import aiImage from '../assets/images/characters/AI.png';
-import mlImage from '../assets/images/characters/ML.png';
-import dlImage from '../assets/images/characters/DL.png';
+import aiImage from '../assets/images/characters/AI.jpg';
+import mlImage from '../assets/images/characters/ML.jpg';
+import dlImage from '../assets/images/characters/DL.jpg';
 
 // 学習の三兄弟（第2章）
-import supervisedImage from '../assets/images/characters/教師あり学習.png';
-import unsupervisedImage from '../assets/images/characters/教師なし学習.png';
-import reinforcementImage from '../assets/images/characters/強化学習.png';
+import supervisedImage from '../assets/images/characters/教師あり学習.jpg';
+import unsupervisedImage from '../assets/images/characters/教師なし学習.jpg';
+import reinforcementImage from '../assets/images/characters/強化学習.jpg';
 
 // ニューラルネットワーク要素（第3章）
 import neuronImage from '../assets/images/characters/ニューロン.jpg';
@@ -31,29 +31,29 @@ import diffusionImage from '../assets/images/characters/DIFFUSION.jpg';
 import nerfImage from '../assets/images/characters/NeRF.jpg';
 
 // データ/プロジェクト（第6章）
-import dataScientistImage from '../assets/images/characters/Data Scientist.png';
-import crispDmImage from '../assets/images/characters/CRISP-DM.png';
-import mlopsImage from '../assets/images/characters/MLOps.png';
-import dataLeakageImage from '../assets/images/characters/Data Leakage.png';
-import metricsImage from '../assets/images/characters/メトリクス.png';
+import dataScientistImage from '../assets/images/characters/Data Scientist.jpg';
+import crispDmImage from '../assets/images/characters/CRISP-DM.jpg';
+import mlopsImage from '../assets/images/characters/MLOps.jpg';
+import dataLeakageImage from '../assets/images/characters/Data Leakage.jpg';
+import metricsImage from '../assets/images/characters/メトリクス.jpg';
 
 // 数理・統計（第7章）
-import statsImage from '../assets/images/characters/スタッツ.png';
-import probabilityImage from '../assets/images/characters/プロバビリタス.png';
-import correlationImage from '../assets/images/characters/コレラティオ.png';
+import statsImage from '../assets/images/characters/スタッツ.jpg';
+import probabilityImage from '../assets/images/characters/プロバビリタス.jpg';
+import correlationImage from '../assets/images/characters/コレラティオ.jpg';
 
 // 法律（第8章）
-import confidentialityImage from '../assets/images/characters/守秘の聖騎士.png';
-import contractImage from '../assets/images/characters/約束の封印師.png';
-import fairTradeImage from '../assets/images/characters/公正の裁定者.png';
-import copyrightImage from '../assets/images/characters/創造の三女神.png';
+import confidentialityImage from '../assets/images/characters/守秘の聖騎士.jpg';
+import contractImage from '../assets/images/characters/約束の封印師.jpg';
+import fairTradeImage from '../assets/images/characters/公正の裁定者.jpg';
+import copyrightImage from '../assets/images/characters/創造の三女神.jpg';
 
 // 倫理（第9章）
-import ethicsImage from '../assets/images/characters/エシカ.png';
-import fairnessImage from '../assets/images/characters/フェアネス.png';
-import securityImage from '../assets/images/characters/セキュリタス.png';
-import transparencyImage from '../assets/images/characters/ルーチェ.png';
-import governanceImage from '../assets/images/characters/ガヴァナー.png';
+import ethicsImage from '../assets/images/characters/エシカ.jpg';
+import fairnessImage from '../assets/images/characters/フェアネス.jpg';
+import securityImage from '../assets/images/characters/セキュリタス.jpg';
+import transparencyImage from '../assets/images/characters/ルーチェ.jpg';
+import governanceImage from '../assets/images/characters/ガヴァナー.jpg';
 
 /**
  * キャラクター定義
@@ -93,7 +93,7 @@ export const CHARACTERS = {
         id: 'supervised',
         name: '教師あり学習',
         fullName: 'Supervised Learning',
-        description: '真面目な長男、正解ラベルで学ぶ',
+        description: '几帳面で責任感の強い真面目な長男',
         image: supervisedImage,
         color: '#4caf50',
         emoji: '📚'
@@ -102,7 +102,7 @@ export const CHARACTERS = {
         id: 'unsupervised',
         name: '教師なし学習',
         fullName: 'Unsupervised Learning',
-        description: '自由奔放な次男、パターン発見',
+        description: '自由奔放な次男、「正解? そんなの自分で見つけるさ!」',
         image: unsupervisedImage,
         color: '#2196f3',
         emoji: '🎨'
@@ -111,7 +111,7 @@ export const CHARACTERS = {
         id: 'reinforcement',
         name: '強化学習',
         fullName: 'Reinforcement Learning',
-        description: '試行錯誤の三男、報酬を求める',
+        description: '失敗を恐れない三男、「失敗は報酬への道標」',
         image: reinforcementImage,
         color: '#ff9800',
         emoji: '🎮'
@@ -131,7 +131,7 @@ export const CHARACTERS = {
         id: 'activation',
         name: '活性化関数',
         fullName: 'Activation Function',
-        description: '感情を司る者、非線形変換',
+        description: '「0か1かではない。グラデーションこそ知性の証」',
         image: activationImage,
         color: '#ff5722',
         emoji: '😊'
@@ -140,7 +140,7 @@ export const CHARACTERS = {
         id: 'loss',
         name: '誤差関数',
         fullName: 'Loss Function',
-        description: '目標との距離を測る者',
+        description: '「厳しさは愛の裏返し」目標との距離を測る',
         image: lossImage,
         color: '#f44336',
         emoji: '🎯'
@@ -149,7 +149,7 @@ export const CHARACTERS = {
         id: 'backprop',
         name: '誤差逆伝播法',
         fullName: 'Backpropagation',
-        description: '振り返りの魔術師、連鎖律',
+        description: '「過去を达ることで未来が開ける」',
         image: backpropImage,
         color: '#9c27b0',
         emoji: '⏪'
@@ -158,7 +158,7 @@ export const CHARACTERS = {
         id: 'optimizer',
         name: '最適化手法',
         fullName: 'Optimizer',
-        description: '成長の道を探す者、Adam',
+        description: '「一歩ずつ、でも確実に最善の道を」',
         image: optimizerImage,
         color: '#673ab7',
         emoji: '🧭'
@@ -178,7 +178,7 @@ export const CHARACTERS = {
         id: 'cnn',
         name: 'CNN',
         fullName: '畳み込みニューラルネットワーク',
-        description: '視覚の達人、AlexNetの生みの親',
+        description: '「俺の目はピクセルの向こうの真実を見抜く」',
         image: cnnImage,
         color: '#009688',
         emoji: '👁️'
@@ -196,7 +196,7 @@ export const CHARACTERS = {
         id: 'rnn',
         name: 'RNN',
         fullName: '回帰型ニューラルネットワーク',
-        description: '記憶の継承者、時系列処理',
+        description: '「覆えていたいのに...記憶が薄れていく」',
         image: rnnImage,
         color: '#795548',
         emoji: '🔄'
@@ -214,7 +214,7 @@ export const CHARACTERS = {
         id: 'transformer',
         name: 'Transformer',
         fullName: 'Transformer',
-        description: 'AI世界の革命児、Attention',
+        description: '「必要なのはAttentionだけだ」革命児',
         image: transformerImage,
         color: '#607d8b',
         emoji: '✨'

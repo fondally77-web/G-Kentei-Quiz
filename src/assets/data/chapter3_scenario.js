@@ -55,7 +55,7 @@ export const chapter3Scenario = [
     },
     {
         character: "活性化関数",
-        text: "私には様々な種類があります。代表的なものを紹介しましょう。",
+        text: "0か1かではない。グラデーションこそが、知性の証。私には様々な種類があります。代表的なものを紹介しましょう。",
         visual: "activation_explain"
     },
     {
@@ -98,7 +98,7 @@ export const chapter3Scenario = [
     },
     {
         character: "誤差関数",
-        text: "学習とは、この誤差を最小化する過程です。誤差が小さいほど、良いモデルということになります。",
+        text: "厳しさは、愛の裏返し。正確な距離が、成長を生む。学習とは、この誤差を最小化する過程です。",
         visual: "loss_explain"
     },
     {
@@ -115,7 +115,7 @@ export const chapter3Scenario = [
     // ===== 誤差逆伝播法 =====
     {
         character: "誤差逆伝播法",
-        text: "私は『誤差逆伝播法（バックプロパゲーション）』。ネットワークの「先生」とも言える存在です。",
+        text: "私は『誤差逆伝播法（バックプロパゲーション）』。過去を达ることで、未来が開ける。",
         visual: "backprop_appear"
     },
     {
@@ -165,7 +165,7 @@ export const chapter3Scenario = [
     // ===== 最適化手法 =====
     {
         character: "最適化手法",
-        text: "私は『最適化手法』。誤差を最小化するために重みをどう更新するかを決める職人です。",
+        text: "私は『最適化手法』。一歩ずつ。でも、確実に最善の道を。誤差を最小化するための重み更新を決める職人です。",
         visual: "optimizer_appear"
     },
     {
@@ -208,7 +208,7 @@ export const chapter3Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "過学習...第2章で学んだな。訓練データに特化しすぎる問題だ。",
+        text: "過学習...第2章で学んだわね。訓練データに特化しすぎる問題なの。",
         visual: "ai_remember"
     },
     {
@@ -247,7 +247,7 @@ export const chapter3Scenario = [
     // ===== エピローグ =====
     {
         character: "AI (人工知能)",
-        text: "なるほど...DLの力は、多くの職人たちの技術の結晶なんだな。",
+        text: "なるほど...DLの力は、たくさんの職人たちの技術の結晶なのね。",
         visual: "ai_impressed"
     },
     {

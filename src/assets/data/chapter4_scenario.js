@@ -35,12 +35,12 @@ export const chapter4Scenario = [
     // ===== 畳み込み層とCNN =====
     {
         character: "畳み込み層",
-        text: "私は『畳み込み層（Convolution Layer）』。画像処理の達人です。",
+        text: "俺は『畳み込み層（Convolution Layer）』。俺の目は、ピクセルの向こうにある真実を見抜く。",
         visual: "conv_appear"
     },
     {
         character: "畳み込み層",
-        text: "フィルタ（カーネル）を画像上でスライドさせながら、局所的な特徴を抽出します。",
+        text: "フィルタ（カーネル）を画像上でスライドさせながら、局所的な特徴を抽出する。",
         visual: "conv_explain"
     },
     {
@@ -50,7 +50,7 @@ export const chapter4Scenario = [
     },
     {
         character: "DL (ディープラーニング)",
-        text: "畳み込み層を使ったネットワークを『CNN（Convolutional Neural Network）』という。画像認識で革命を起こした。",
+        text: "畳み込み層を使ったネットワークを『CNN（Convolutional Neural Network）』という。DL、お前に『目』をやろう。",
         visual: "dl_explain"
     },
     {
@@ -114,12 +114,12 @@ export const chapter4Scenario = [
     // ===== 回帰結合層とRNN =====
     {
         character: "回帰結合層",
-        text: "私は『回帰結合層（Recurrent Layer）』。時系列データを扱う専門家です。",
+        text: "私は『回帰結合層（Recurrent Layer）』。時系列データを扱う専門家だ。",
         visual: "rnn_appear"
     },
     {
         character: "回帰結合層",
-        text: "過去の情報を「記憶」として保持し、次の時刻の処理に使用します。",
+        text: "俺は『隠れ状態』を次の時刻に渡す。過去の情報を「記憶」として保持するんだ。",
         visual: "rnn_explain"
     },
     {
@@ -129,14 +129,14 @@ export const chapter4Scenario = [
     },
     {
         character: "回帰結合層",
-        text: "しかし、私には弱点がある。長い系列では過去の情報を忘れてしまう『長期依存性問題』だ。",
+        text: "しかし、俺には弱点がある。覆えていたいのに...記憶が薄れていく...『長期依存性問題』だ。",
         visual: "rnn_struggle"
     },
 
     // ===== LSTM・GRU =====
     {
         character: "LSTM",
-        text: "そこで私『LSTM（Long Short-Term Memory）』の出番だ。ゲート機構で長期記憶を保持できる。",
+        text: "だが...俺には『覚醒』がある！ 『LSTM（Long Short-Term Memory）』、ゲート機構で長期記憶を保持できる。",
         visual: "lstm_appear"
     },
     {
@@ -200,7 +200,7 @@ export const chapter4Scenario = [
     // ===== エピローグ =====
     {
         character: "AI (人工知能)",
-        text: "なるほど...畳み込み層で画像を、回帰結合層で時系列を、Attentionで重要な部分を...それぞれの層に専門分野があるんだな。",
+        text: "なるほど...畳み込み層で画像を、回帰結合層で時系列を、Attentionで重要な部分を...それぞれの層に専門分野があるのね。",
         visual: "ai_impressed"
     },
     {

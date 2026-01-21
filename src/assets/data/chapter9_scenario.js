@@ -18,7 +18,7 @@ export const chapter9Scenario = [
     // ===== AIのリスクと社会的影響 =====
     {
         character: "倫理の番人",
-        text: "私は『AI倫理』の番人。AIが社会に与える影響と責任を問います。",
+        text: "技術は中立ではない。使う者の倫理が、未来を決める。私は『AI倫理』の番人だ。",
         visual: "ethics_appear"
     },
     {
@@ -30,7 +30,7 @@ export const chapter9Scenario = [
     // ===== 公平性（Fairness） =====
     {
         character: "公平性の番人",
-        text: "私は『公平性（Fairness）』の番人。AIが差別をしないよう見守ります。",
+        text: "AIは鏡だ。偏見を映すか、公平を映すか――それは私たち次第。私は『公平性（Fairness）』の番人だ。",
         visual: "fairness_appear"
     },
     {
@@ -53,7 +53,7 @@ export const chapter9Scenario = [
     // ===== 透明性・説明責任 =====
     {
         character: "透明性の番人",
-        text: "私は『透明性（Transparency）』の番人。AIの判断理由を明らかにすることを求めます。",
+        text: "ブラックボックスは許さない。すべての判断には、理由がなければならない。私は『透明性（Transparency）』の番人だ。",
         visual: "transparency_appear"
     },
     {
@@ -97,7 +97,7 @@ export const chapter9Scenario = [
     // ===== 安全性・セキュリティ =====
     {
         character: "安全性の番人",
-        text: "私は『安全性・セキュリティ』の番人。AIが害を及ぼさないよう監視します。",
+        text: "敵を知り、己を知れば、百戦危うからず。私は『安全性・セキュリティ』の番人だ。",
         visual: "safety_appear"
     },
     {
@@ -114,7 +114,7 @@ export const chapter9Scenario = [
     // ===== AI原則・ガイドライン =====
     {
         character: "ガバナンスの番人",
-        text: "私は『AIガバナンス』の番人。AIを適切に管理するためのルールを整備します。",
+        text: "倫理は理想だけでは機能しない。組織として実践する仕組みが必要だ。私は『AIガバナンス』の番人だ。",
         visual: "governance_appear"
     },
     {
@@ -166,7 +166,7 @@ export const chapter9Scenario = [
     // ===== エピローグ =====
     {
         character: "AI (人工知能)",
-        text: "公平性、透明性、プライバシー、安全性、ガバナンス...AIにはこれほど多くの倫理的課題があるのか。",
+        text: "公平性、透明性、プライバシー、安全性、ガバナンス...AIにはこれほど多くの倫理的課題があるのね。",
         visual: "ai_reflect"
     },
     {
@@ -176,7 +176,7 @@ export const chapter9Scenario = [
     },
     {
         character: "AI (人工知能)",
-        text: "9つの章を通じて、AIの技術、歴史、法律、倫理を学んできた。この旅は終わりではなく、始まりだ。",
+        text: "9つの章を通じて、AIの技術、歴史、法律、倫理を学んできたわ。この旅は終わりではなく、始まりなの。",
         visual: "ai_determined"
     },
     {
