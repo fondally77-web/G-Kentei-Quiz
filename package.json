@@ -1,7 +1,7 @@
 {
   "name": "g-kentei-quiz",
   "version": "1.0.0",
-  "description": "G検定対策クイズアプリ",
+  "description": "G検定の学習と模擬演習のためのクイズアプリ",
   "type": "module",
   "scripts": {
     "dev": "vite",
